@@ -4,7 +4,7 @@ services:
     image: "chatopera/fmt:${FMT_BUILD:-develop}"
     restart: always
     volumes:
-      - ./fmt/data/accounts.json:/app/config/accounts.json
+      - ./fmt/data/accounts.json:/app/config/accounts.json:ro
     ports:
       - "${FMT_PORT:-8555}:8555"
     environment:
