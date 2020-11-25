@@ -1,0 +1,26 @@
+version: "3"
+services:
+  fmt:
+    image: "chatopera/fmt:${FMT_BUILD:-develop}"
+    restart: always
+    volumes:
+      - ./fmt/data/accounts.json:/app/config/accounts.json
+    ports:
+      - "${FMT_PORT:-8555}:8555"
+    environment:
+      - FMT_ACCOUNTS=${FMT_ACCOUNTS:-}
+      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/fmt}
+      - BOT_PROVIDER=${BOT_PROVIDER:-https://bot.chatopera.com}
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: "tutum/mongodb:3.2"
+    restart: always
+    volumes:
+      - ./database/mongodb/data:/data/db
+    ports:
+      - "${MONGODB_PORT:-8556}:27017"
+      - "${MONGODB_PORT2:-8557}:27018"
+    environment:
+      - AUTH=no

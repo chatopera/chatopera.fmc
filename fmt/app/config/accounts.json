@@ -1,0 +1,16 @@
+[
+  {
+    "appId": "",
+    "access_token": "",
+    "chatbot": {
+      "en_US": {
+        "clientId": "",
+        "secret": ""
+      },
+      "zh_TW": {
+        "clientId": "",
+        "secret": ""
+      }
+    }
+  }
+]
