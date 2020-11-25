@@ -14,6 +14,7 @@ const ModelSchema = new mongoose.Schema(
   {
     userId: { type: String },
     appId: { type: String, require: true },
+    pageId: { type: String, require: true },
     messageId: String,
     yesId: String,
     noId: String,

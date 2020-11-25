@@ -14,7 +14,10 @@ Just click _Send Message_ to bring up the chatbox.
 
 ## Prerequisites
 
-- Facebook Account
+- [Facebook Account](https://developers.facebook.com/docs/messenger-platform/getting-started/sample-apps/original-coast-clothing)
+  - Facebook Page
+  - Facebook Developer Account
+  - Facebook App:
 - Facebook Page
 - Chatopera Account
 - Node.js 10+
@@ -25,11 +28,21 @@ Just click _Send Message_ to bring up the chatbox.
 
 ###
 
+### start ngrok
+
+```
+ngrok http 8555
+```
+
+![]()
+
 ## Contrib
 
 Start to develop fmt project with [GUIDE](./fmt).
 
 ## References
+
+[Requirements to deploy a Messenger app](https://developers.facebook.com/docs/messenger-platform/getting-started/sample-apps/original-coast-clothing)
 
 [Build your first Messenger bot fast
 ](https://developers.facebook.com/docs/messenger-platform)

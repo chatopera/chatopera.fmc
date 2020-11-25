@@ -1,8 +1,11 @@
 require('dotenv').config();
+const debug = require('debug')('fmt:config');
 const _ = require('lodash');
-const accounts = require(process.env['FMT_ACCOUNTS']
+const accounts_module = process.env['FMT_ACCOUNTS']
   ? process.env['FMT_ACCOUNTS']
-  : './accounts.json');
+  : './accounts.json';
+debug('resolve accounts module path %s', accounts_module);
+const accounts = require(accounts_module);
 
 const config = {
   MONGO_URI: process.env['MONGO_URI'] || 'mongodb://mongo:27017/fmt',

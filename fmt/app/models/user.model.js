@@ -14,6 +14,7 @@ const ModelSchema = new mongoose.Schema(
   {
     _id: { type: String },
     appId: { type: String, require: true },
+    pageId: { type: String, require: true },
     locale: String,
     first_name: String,
     last_name: String,

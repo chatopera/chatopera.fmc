@@ -8,9 +8,12 @@
 // Date: 2020-11-25:18:36:48
 //
 //===============================================================================
+const debug = require('debug')('fmt:services:chatopera');
 const { Chatbot } = require('@chatopera/sdk');
 const config = require('../config');
 const _ = require('lodash');
+const CONSTANTS = require('../miscs/constants');
+const { getAccountByPageId } = require('../miscs/utils');
 
 class ChatoperaService {
   constructor(clientId, secret) {
@@ -37,25 +40,24 @@ class ChatoperaService {
   }
 }
 
-exports.getInstance = (appId, locale) => {
-  const defaultLocale = 'en_US';
-  let account = _.find(config.accounts, { appId });
+exports.getInstance = (pageId, locale) => {
+  let account = getAccountByPageId(config.accounts, pageId);
   if (!account) {
-    throw new Error('app %s account config not found.', appId);
+    throw new Error('app %s account config not found.', pageId);
   }
 
-  locale = locale || defaultLocale;
-  let chatbotConfig = account.chatbot[locale];
+  locale = locale || CONSTANTS.DV_LOCALE;
+  let chatbotConfig = account.chatopera[locale];
 
   if (!chatbotConfig) {
-    chatbotConfig = account.chatbot[defaultLocale];
+    chatbotConfig = account.chatopera[CONSTANTS.DV_LOCALE];
   }
 
   if (!chatbotConfig) {
     throw new Error(`locale ${locale} bot not found.`);
   }
 
-  console.log(chatbotConfig);
+  debug('resolve bot instance settings', chatbotConfig);
 
   return new ChatoperaService(chatbotConfig.clientId, chatbotConfig.secret);
 };

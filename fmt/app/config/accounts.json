@@ -1,15 +1,47 @@
 [
   {
+    "appName": "appName",
     "appId": "",
-    "access_token": "",
-    "chatbot": {
+    "appSecret": "",
+    "pages": [{ "pageId": "", "access_token": "" }],
+    "chatopera": {
+      "fallback": {
+        "clientId": "",
+        "secret": "",
+        "lang": "en_US",
+        "custom": {
+          "GUESS_MSG": "Ask instead for",
+          "HELPFUL_MSG": "Was this information helpful?",
+          "CLICK_YES_MSG": [
+            "Wow, that's great!",
+            "Have a nice day.",
+            "Glad to know that."
+          ],
+          "CLICK_NO_MSG": [
+            "Please retry other words.",
+            "Sorry about that, we would enhance the knowledge further.",
+            "Bot is still improving right now, so, please request for a human."
+          ]
+        }
+      },
       "en_US": {
         "clientId": "",
-        "secret": ""
-      },
-      "zh_TW": {
-        "clientId": "",
-        "secret": ""
+        "secret": "",
+        "lang": "en_US",
+        "custom": {
+          "GUESS_MSG": "Ask instead for",
+          "HELPFUL_MSG": "Was this information helpful?",
+          "CLICK_YES_MSG": [
+            "Wow, that's great!",
+            "Have a nice day.",
+            "Glad to know that."
+          ],
+          "CLICK_NO_MSG": [
+            "Please retry other words.",
+            "Sorry about that, we would enhance the knowledge further.",
+            "Bot is still improving right now, so, please request for a human."
+          ]
+        }
       }
     }
   }

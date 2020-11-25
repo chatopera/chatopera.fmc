@@ -15,36 +15,38 @@ const _ = require('lodash');
 const { User, AnswerComment } = require('../models');
 const { v4: uuidv4 } = require('uuid');
 const config = require('../config');
-
-const GUESS_MSG = '';
-const HELPFUL_MSG = '';
-const CLICK_YES_MSG = '';
-const CLICK_NO_MSG = '';
+const CONSTANTS = require('../miscs/constants');
+const { getAccountByPageId } = require('../miscs/utils');
 
 class ChatService {
-  constructor(appId, userId) {
-    this.appId = appId;
+  constructor(pageId, userId) {
+    debug('chat service: pageId(%s), userId(%s)', pageId, userId);
+    this.pageId = pageId;
     this.userId = userId;
   }
 
   async init() {
-    this.facebook = facebookService.getInstance(this.appId);
+    this.facebook = facebookService.getInstance(this.pageId);
     const user = await User.findById(this.userId).exec();
-    this.chatbot = chatbotService.getInstance(this.appId, user?.locale);
 
-    let account = _.find(config.accounts, { appId: this.appId });
+    if (user)
+      debug('[init] user profile %s', JSON.stringify(user.toJSON(), null, ' '));
+
+    this.chatbot = chatbotService.getInstance(this.pageId, user?.locale);
+
+    let account = getAccountByPageId(config.accounts, this.pageId);
 
     this.msgs = {
-      GUESS_MSG,
-      HELPFUL_MSG,
-      CLICK_YES_MSG,
-      CLICK_NO_MSG,
-      ..._.get(account?.chatbot, user?.locale)?.config,
+      GUESS_MSG: CONSTANTS.DV_GUESS_MSG,
+      HELPFUL_MSG: CONSTANTS.DV_HELPFUL_MSG,
+      CLICK_YES_MSG: CONSTANTS.DV_CLICK_YES_MSG,
+      CLICK_NO_MSG: CONSTANTS.DV_CLICK_NO_MSG,
+      ..._.get(account?.chatopera, user?.locale || CONSTANTS.DV_LOCALE)?.custom,
     };
   }
 
   query(senderId, key) {
-    debug('user %s query %s on %s', senderId, key, this.appId);
+    debug('user %s query %s on %s', senderId, key, this.pageId);
 
     this.chatbotQuery(senderId, key).catch(console.error);
   }
@@ -106,7 +108,7 @@ class ChatService {
       let _messageId = body.message_id;
       var answerComment = await AnswerComment.create({
         userId: senderId,
-        appId: this.appId,
+        pageId: this.pageId,
         messageId: _messageId,
         yesId: yesId,
         noId: noId,
@@ -130,7 +132,10 @@ class ChatService {
         console.log('已评论过');
       } else {
         console.log('正在评价Yes');
-        await this.facebook.sendTextMessage(senderId, this.msgs.CLICK_YES_MSG);
+        await this.facebook.sendTextMessage(
+          senderId,
+          _.sample(this.msgs.CLICK_YES_MSG)
+        );
         let doc = await AnswerComment.findOne({ yesId: YorNId }).exec();
         doc.comment = 'Yes';
         doc.status = true;
@@ -142,7 +147,10 @@ class ChatService {
         console.log('已评论过');
       } else {
         console.log('正在评价No');
-        await this.facebook.sendTextMessage(senderId, this.msgs.CLICK_NO_MSG);
+        await this.facebook.sendTextMessage(
+          senderId,
+          _.sample(this.msgs.CLICK_NO_MSG)
+        );
         let doc = await AnswerComment.findOne({ noId: YorNId }).exec();
         doc.comment = 'No';
         doc.status = true;
@@ -164,8 +172,8 @@ class ChatService {
   }
 }
 
-exports.create = async (appId, userId) => {
-  let instance = new ChatService(appId, userId);
+exports.create = async (pageId, userId) => {
+  let instance = new ChatService(pageId, userId);
   await instance.init();
   return instance;
 };

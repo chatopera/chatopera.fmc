@@ -12,12 +12,16 @@ const got = require('got');
 const _ = require('lodash');
 const config = require('../config');
 const debug = require('debug')('fmt:service:facebook');
+const {
+  getAccountByPageId,
+  getAccessTokenByPageId,
+} = require('../miscs/utils');
 
 const FACEBOOK_MESSAGES_API = 'https://graph.facebook.com/v2.6/me/messages';
 
 class FacebookService {
-  constructor(appId, access_token) {
-    this.appId = appId;
+  constructor(pageId, access_token) {
+    this.pageId = pageId;
     this.access_token = access_token;
   }
 
@@ -174,17 +178,18 @@ class FacebookService {
 }
 
 const facebookInstance = {};
-const facebookFactory = (appId) => {
-  let instance = facebookInstance[appId];
+const facebookFactory = (pageId) => {
+  let instance = facebookInstance[pageId];
   if (!instance) {
-    let account = _.find(config.accounts, { appId });
+    let account = getAccountByPageId(config.accounts, pageId);
+    let access_token = getAccessTokenByPageId(account, pageId);
     if (account) {
-      instance = new FacebookService(appId, account.access_token);
+      instance = new FacebookService(pageId, access_token);
     } else {
-      throw new Error('app %s account config not found.', appId);
+      throw new Error('app %s account config not found.', pageId);
     }
 
-    facebookInstance[appId] = instance;
+    facebookInstance[pageId] = instance;
   }
 
   return instance;
