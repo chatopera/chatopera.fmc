@@ -8,8 +8,8 @@ services:
     ports:
       - "${FMT_PORT:-8555}:8555"
     environment:
-      - FMT_ACCOUNTS=${FMT_ACCOUNTS:-}
-      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/fmt}
+      - DEBUG=${DEBUG:-}
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/fmt}
       - BOT_PROVIDER=${BOT_PROVIDER:-https://bot.chatopera.com}
     depends_on:
       - mongodb

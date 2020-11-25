@@ -8,7 +8,7 @@ debug('resolve accounts module path %s', accounts_module);
 const accounts = require(accounts_module);
 
 const config = {
-  MONGO_URI: process.env['MONGO_URI'] || 'mongodb://mongo:27017/fmt',
+  MONGO_URI: process.env['MONGO_URI'] || 'mongodb://mongodb:27017/fmt',
   BOT_PROVIDER: process.env['BOT_PROVIDER'] || 'https://bot.chatopera.com',
   PORT: process.env['PORT'] || 8555,
   accounts,
