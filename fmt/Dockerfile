@@ -15,6 +15,6 @@ COPY ./app /app
 
 ENV NODE_ENV production
 
-EXPOSE 4855
+EXPOSE 8555
 
 CMD npm start
