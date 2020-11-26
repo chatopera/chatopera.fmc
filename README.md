@@ -4,7 +4,7 @@
 
 Boot your bots in Facebook Messegner with [Chatopera](https://bot.chatopera.com/) in minutes.
 
-![](./docs/images/2.png)
+![](./docs/images/3.png)
 
 ## Give me a demo
 
