@@ -10,17 +10,19 @@
         "secret": "",
         "lang": "en_US",
         "custom": {
-          "GUESS_MSG": "Ask instead for",
-          "HELPFUL_MSG": "Was this information helpful?",
+          "GUESS_MSG": "推荐问题",
+          "HELPFUL_MSG": "以上信息有帮助吗？",
+          "HELPFUL_FEEDBACK_YES_BTN": "有帮助",
+          "HELPFUL_FEEDBACK_NO_BTN": "没帮助",
           "CLICK_YES_MSG": [
-            "Wow, that's great!",
-            "Have a nice day.",
-            "Glad to know that."
+            "感谢您的支持！",
+            "祝您有美好的一天！",
+            "期待再次为您服务。"
           ],
           "CLICK_NO_MSG": [
-            "Please retry other words.",
-            "Sorry about that, we would enhance the knowledge further.",
-            "Bot is still improving right now, so, please request for a human."
+            "请优化检索条件再试一下。",
+            "非常抱歉没有帮助您解决问题，机器人客服的技能还在提升！",
+            "非常抱歉，稍后为您转人工处理，请耐心等待或发送邮件到 some@email.com"
           ]
         }
       },
@@ -31,6 +33,8 @@
         "custom": {
           "GUESS_MSG": "Ask instead for",
           "HELPFUL_MSG": "Was this information helpful?",
+          "HELPFUL_FEEDBACK_YES_BTN": "Yes",
+          "HELPFUL_FEEDBACK_NO_BTN": "Nope",
           "CLICK_YES_MSG": [
             "Wow, that's great!",
             "Have a nice day.",

@@ -23,25 +23,26 @@ class ChatService {
     debug('chat service: pageId(%s), userId(%s)', pageId, userId);
     this.pageId = pageId;
     this.userId = userId;
+    this.account = null;
+    this.locale = CONSTANTS.DV_LOCALE;
   }
 
   async init() {
     this.facebook = facebookService.getInstance(this.pageId);
+    // reload user from db
     const user = await User.findById(this.userId).exec();
-
-    if (user)
-      debug('[init] user profile %s', JSON.stringify(user.toJSON(), null, ' '));
-
-    this.chatbot = chatbotService.getInstance(this.pageId, user?.locale);
-
-    let account = getAccountByPageId(config.accounts, this.pageId);
+    this.locale = user?.locale || CONSTANTS.DV_LOCALE;
+    this.account = getAccountByPageId(config.accounts, this.pageId);
+    this.chatbot = chatbotService.getInstance(this.pageId, this.locale);
 
     this.msgs = {
       GUESS_MSG: CONSTANTS.DV_GUESS_MSG,
       HELPFUL_MSG: CONSTANTS.DV_HELPFUL_MSG,
+      HELPFUL_FEEDBACK_YES_BTN: CONSTANTS.DV_HELPFUL_FEEDBACK_YES_BTN,
+      HELPFUL_FEEDBACK_NO_BTN: CONSTANTS.DV_HELPFUL_FEEDBACK_NO_BTN,
       CLICK_YES_MSG: CONSTANTS.DV_CLICK_YES_MSG,
       CLICK_NO_MSG: CONSTANTS.DV_CLICK_NO_MSG,
-      ..._.get(account?.chatopera, user?.locale || CONSTANTS.DV_LOCALE)?.custom,
+      ..._.get(this.account?.chatopera, this.locale)?.custom,
     };
   }
 
@@ -96,12 +97,12 @@ class ChatService {
       let body = await this.facebook.sendButtonMessage(senderId, resultMsg, [
         {
           type: 'postback',
-          title: 'Yes',
+          title: this.msgs.HELPFUL_FEEDBACK_YES_BTN,
           payload: 'evaluate' + 'Y' + yesId,
         },
         {
           type: 'postback',
-          title: 'No',
+          title: this.msgs.HELPFUL_FEEDBACK_NO_BTN,
           payload: 'evaluate' + 'N' + noId,
         },
       ]);
@@ -118,7 +119,7 @@ class ChatService {
         question: kickoffResult.service?.post, //知识库问题
         answer: kickoffResult.string, //知识库答案
       });
-      console.log(answerComment);
+      debug(answerComment);
     } else {
       await this.facebook.sendTextMessage(senderId, kickoffResult.string);
     }
@@ -129,9 +130,9 @@ class ChatService {
     if (evaluationResults == 'Y') {
       let yesData = await AnswerComment.findOne({ yesId: YorNId });
       if (yesData?.status == true) {
-        console.log('已评论过');
+        debug('已评论过');
       } else {
-        console.log('正在评价Yes');
+        debug('正在评价Yes');
         await this.facebook.sendTextMessage(
           senderId,
           _.sample(this.msgs.CLICK_YES_MSG)
@@ -144,9 +145,9 @@ class ChatService {
     } else if (evaluationResults == 'N') {
       let noData = await AnswerComment.findOne({ noId: YorNId });
       if (noData?.status == true) {
-        console.log('已评论过');
+        debug('已评论过');
       } else {
-        console.log('正在评价No');
+        debug('正在评价No');
         await this.facebook.sendTextMessage(
           senderId,
           _.sample(this.msgs.CLICK_NO_MSG)
@@ -167,7 +168,7 @@ class ChatService {
   async openThreadOkQuery(senderId, ref, payloadData) {
     debug('user %s query msg', senderId, ref, payloadData);
     // 保存到数据库 payloadData为链接参数
-    console.log(payloadData);
+    debug(payloadData);
     this.facebook.sendTextMessage(senderId, '感谢您的关注，上线之后会通知到您');
   }
 }
