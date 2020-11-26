@@ -149,6 +149,32 @@ class ChatService {
         answer: response.string, //知识库答案
       });
       debug(answerComment);
+    } else if (
+      response.service?.provider == 'conversation' &&
+      response.string.startsWith('#list#')
+    ) {
+      // 发送多轮对话里传送的列表消息
+      let title = response.string.slice(6);
+      if (typeof title === 'string') title = title.trim();
+      if (!title) title = this.msgs.GUESS_MSG;
+
+      if (_.isArray(response.params) && response.params.length > 0) {
+        let payload = [];
+        for (let x of response.params) {
+          if (x.type !== 'plain') continue;
+          if (x.content) {
+            payload.push({
+              type: 'postback',
+              title: x.content,
+              payload: x.content,
+            });
+          }
+        }
+
+        await this.facebook.sendButtonMessage(senderId, title, payload);
+      } else {
+        await this.facebook.sendTextMessage(senderId, title);
+      }
     } else {
       await this.facebook.sendTextMessage(senderId, response.string);
     }
