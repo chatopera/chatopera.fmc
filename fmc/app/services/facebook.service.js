@@ -11,7 +11,9 @@
 const got = require('got');
 const _ = require('lodash');
 const debug = require('debug')('fmc:service:facebook');
+const config = require('../config/index');
 const { getAccessTokenByPageId } = require('../miscs/utils');
+const { DV_GET_START_TEXT, DV_GREETING_TEXT } = require('../miscs/constants');
 
 const FACEBOOK_MESSAGES_API = 'https://graph.facebook.com/v2.6/me/messages';
 const FACEBOOK_MESSENGER_PROFILE_API =
@@ -225,16 +227,18 @@ class FacebookService {
    * https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen
    */
   async setGetStartedButton(payload) {
-    let { body } = await got.post(FACEBOOK_MESSENGER_PROFILE_API, {
-      searchParams: {
-        access_token: this.access_token,
-      },
-      json: {
-        get_started: { payload },
-      },
-    });
+    let body = await got
+      .post(FACEBOOK_MESSENGER_PROFILE_API, {
+        searchParams: {
+          access_token: this.access_token,
+        },
+        json: {
+          get_started: { payload },
+        },
+      })
+      .json();
 
-    debug('[setGetStartedButton] result', body);
+    debug('[setGetStartedButton] pageId(%s), result', this.pageId, body);
   }
 
   /**
@@ -243,22 +247,25 @@ class FacebookService {
    * @param {*} payload
    */
   async setGreetingText(greeting) {
-    let { body } = await got.post(FACEBOOK_MESSENGER_PROFILE_API, {
-      searchParams: {
-        access_token: this.access_token,
-      },
-      json: {
-        greeting,
-      },
-    });
+    let body = await got
+      .post(FACEBOOK_MESSENGER_PROFILE_API, {
+        searchParams: {
+          access_token: this.access_token,
+        },
+        json: {
+          greeting,
+        },
+      })
+      .json();
 
-    debug('[setGreetingText] result', body);
+    debug('[setGreetingText] pageId(%s), result', this.pageId, body);
   }
 }
 
-const facebookInstance = {};
+const INSTANCES = {};
+
 const facebookFactory = (pageId, account) => {
-  let instance = facebookInstance[pageId];
+  let instance = INSTANCES[pageId];
   if (!instance) {
     let access_token = getAccessTokenByPageId(account, pageId);
     if (account) {
@@ -267,10 +274,57 @@ const facebookFactory = (pageId, account) => {
       throw new Error('app %s account config not found.', pageId);
     }
 
-    facebookInstance[pageId] = instance;
+    INSTANCES[pageId] = instance;
   }
 
   return instance;
 };
 
-exports.getInstance = facebookFactory;
+/**
+ * setup all accounts for me
+ */
+async function init() {
+  debug('[init] setup facebook messenger bots with accounts');
+  let defined = new Set();
+
+  for (let x of config.accounts) {
+    if (!x.pages) continue;
+    for (let p of x.pages) {
+      // facebook messenger 设置 get start button
+      if (defined.has(p.pageId)) continue;
+      let me = facebookFactory(p.pageId, x);
+      await me.setGetStartedButton(DV_GET_START_TEXT);
+
+      // facebook messenger 设置 greeting text
+      let defaultLocale = _.get(x, 'localeDefault');
+      let greeting = [
+        {
+          locale: 'default',
+          text:
+            defaultLocale && x?.chatopera[defaultLocale]?.custom
+              ? x['chatopera'][defaultLocale]['custom']?.GREETING_TEXT ||
+                DV_GREETING_TEXT
+              : DV_GREETING_TEXT,
+        },
+      ];
+
+      if (x.chatopera && typeof x.chatopera === 'object') {
+        let locales = Object.keys(x.chatopera);
+        for (let y of locales) {
+          let g = {
+            locale: y,
+            text: x.chatopera[y].custom?.GREETING_TEXT,
+          };
+          if (g.text) greeting.push(g);
+        }
+      }
+
+      await me.setGreetingText(greeting);
+    }
+  }
+}
+
+exports = module.exports = {
+  getInstance: facebookFactory,
+  init,
+};

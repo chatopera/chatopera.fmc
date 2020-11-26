@@ -59,11 +59,6 @@ class ChatService {
     };
   }
 
-  chat(senderId, key) {
-    debug('user %s query %s on pageId(%s)', senderId, key, this.pageId);
-    this.chatbotConversationQuery(senderId, key).catch(console.error);
-  }
-
   /**
    * retrieve user profile info from facebook, set into db
    * @param {*} psid
@@ -81,9 +76,14 @@ class ChatService {
    * @param {*} msg
    * @param {*} isFaqClick
    */
-  async chatbotConversationQuery(senderId, msg, isFaqClick) {
-    debug('[chatbotConversationQuery] user %s query msg', senderId, msg);
-
+  async chat(senderId, msg, isFaqClick) {
+    debug(
+      '[chat] user %s query %s on pageId(%s), isFaqClick %s',
+      senderId,
+      msg,
+      this.pageId,
+      isFaqClick
+    );
     let response = await this.brain.conversationQuery(
       senderId,
       msg,

@@ -10,6 +10,7 @@
 //===============================================================================
 const chatServiceCreate = require('../services/chat.service').create;
 const debug = require('debug')('fmc:route:webhook');
+const CONSTANTS = require('../miscs/constants');
 
 exports.get_webhook = (ctx) => {
   ctx.body = ctx.request.query['hub.challenge'];
@@ -47,16 +48,14 @@ exports.post_webhook = async (ctx) => {
           );
           let YorNId = messagingEvent.postback?.payload.substring(9);
           chatService.commentQuery(senderId, evaluationResults, YorNId);
-        } else if (messagingEvent.postback?.payload == '__faq_hot_list') {
-          chatService.chat(senderId, messagingEvent.postback?.payload);
+        } else if (
+          messagingEvent.postback?.payload == CONSTANTS.DV_GET_START_TEXT
+        ) {
+          await chatService.chat(senderId, messagingEvent.postback?.payload);
         } else if (/^faq-(.+)/.test(messagingEvent.postback?.payload)) {
           let match = messagingEvent.postback.payload.match(/^faq-(.+)/);
           if (match) {
-            await chatService.chatbotConversationQuery(
-              senderId,
-              match[1],
-              true
-            );
+            await chatService.chat(senderId, match[1], true);
           }
         } else {
           let msg = messagingEvent.message?.text;
@@ -66,7 +65,7 @@ exports.post_webhook = async (ctx) => {
 
           // skip empty or undefined messages
           // https://github.com/chatopera/chatopera.fmc/issues/1
-          if (final) chatService.chat(senderId, final);
+          if (final) await chatService.chat(senderId, final);
         }
       }
     }

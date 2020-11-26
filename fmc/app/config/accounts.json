@@ -10,6 +10,7 @@
         "clientId": "",
         "secret": "",
         "custom": {
+          "GREETING_TEXT": "美好的一天从一声问候开始，你好，我是某某某！",
           "GUESS_MSG": "推荐问题",
           "HELPFUL_MSG": "以上信息有帮助吗？",
           "HELPFUL_FEEDBACK_YES_BTN": "有帮助",
@@ -30,6 +31,7 @@
         "clientId": "",
         "secret": "",
         "custom": {
+          "GREETING_TEXT": "A good day starts with a greeting, hello, I am Whatever you want ...",
           "GUESS_MSG": "Ask instead for",
           "HELPFUL_MSG": "Was this information helpful?",
           "HELPFUL_FEEDBACK_YES_BTN": "Yes",

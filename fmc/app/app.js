@@ -17,21 +17,6 @@ const bodyParser = require('koa-bodyparser');
 const config = require('./config');
 const router = require('./routers');
 
-const app = new Koa();
-app.use(koaLogger());
-app.use(bodyParser());
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-app.listen(config.PORT, async () => {
-  let readlineq = require('readlineq');
-  let banner = await readlineq('./config/banner.txt');
-  for (let line of banner) {
-    console.log(line);
-  }
-  console.log('server listening on port %s', config.PORT);
-});
-
 process.on('uncaughtException', function (err) {
   console.error(err);
 });
@@ -39,3 +24,45 @@ process.on('uncaughtException', function (err) {
 process.on('unhandledRejection', (err) => {
   console.error('unhandledRejection', err);
 });
+
+/**
+ * Start server
+ */
+function runApp() {
+  const app = new Koa();
+  app.use(koaLogger());
+  app.use(bodyParser());
+  app.use(router.routes());
+  app.use(router.allowedMethods());
+
+  app.listen(config.PORT, async () => {
+    let readlineq = require('readlineq');
+    let banner = await readlineq('./config/banner.txt');
+    for (let line of banner) {
+      console.log(line);
+    }
+    console.log('server listening on port %s', config.PORT);
+  });
+}
+
+// main function
+async function main() {
+  /**
+   * Initialization
+   */
+  // 设置 Facebook Me greeting text / get started button.
+  const fbService = require('./services/facebook.service');
+  await fbService.init();
+
+  /**
+   * Run
+   */
+  runApp();
+}
+
+// on main entry
+if (require.main === module) {
+  (async function () {
+    await main();
+  })();
+}
