@@ -11,7 +11,7 @@
 const got = require('got');
 const _ = require('lodash');
 const config = require('../config');
-const debug = require('debug')('fmt:service:facebook');
+const debug = require('debug')('fmc:service:facebook');
 const {
   getAccountByPageId,
   getAccessTokenByPageId,

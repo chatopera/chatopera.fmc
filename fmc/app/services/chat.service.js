@@ -9,7 +9,7 @@
 //
 //===============================================================================
 const facebookService = require('./facebook.service');
-const debug = require('debug')('fmt:service:chat');
+const debug = require('debug')('fmc:service:chat');
 const chatbotService = require('./chatopera.service');
 const _ = require('lodash');
 const { User, AnswerComment } = require('../models');

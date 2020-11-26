@@ -8,7 +8,7 @@
 // Date: 2020-11-25:18:36:48
 //
 //===============================================================================
-const debug = require('debug')('fmt:services:chatopera');
+const debug = require('debug')('fmc:services:chatopera');
 const { Chatbot } = require('@chatopera/sdk');
 const config = require('../config');
 const _ = require('lodash');

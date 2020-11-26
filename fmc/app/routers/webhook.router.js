@@ -9,7 +9,7 @@
 //
 //===============================================================================
 const chatServiceCreate = require('../services/chat.service').create;
-const debug = require('debug')('fmt:route:webhook');
+const debug = require('debug')('fmc:route:webhook');
 
 exports.get_webhook = (ctx) => {
   ctx.body = ctx.request.query['hub.challenge'];

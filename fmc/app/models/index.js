@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const config = require('../config');
 const User = require('./user.model');
 const AnswerComment = require('./answerComment.model');
-const debug = require('debug')('fmt:models:index');
+const debug = require('debug')('fmc:models:index');
 
 debug('connecting to mongodb %s ...', config.MONGO_URI);
 

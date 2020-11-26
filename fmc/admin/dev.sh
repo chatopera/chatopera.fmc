@@ -19,7 +19,7 @@ fi
 
 cd $baseDir/../app
 
-export DEBUG=fmt*
-export FMT_ACCOUNTS=$PWD/config/accounts-dev.json
+export DEBUG=fmc*
+export FMC_ACCOUNTS=$PWD/config/accounts-dev.json
 
 npm run dev

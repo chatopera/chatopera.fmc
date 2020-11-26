@@ -1,5 +1,5 @@
 {
-  "name": "@chatopera/fmt",
+  "name": "@chatopera/fmc",
   "version": "1.0.0",
   "description": "🐝 boot your bots in Facebook Messegner with Chatopera in minutes.",
   "main": "app.js",
@@ -35,6 +35,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/chatopera/chatopera.fmt"
+    "url": "https://github.com/chatopera/chatopera.fmc"
   }
 }

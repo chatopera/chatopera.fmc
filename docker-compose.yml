@@ -1,15 +1,15 @@
 version: "3"
 services:
-  fmt:
-    image: "chatopera/fmt:${FMT_BUILD:-develop}"
+  fmc:
+    image: "chatopera/fmc:${FMC_BUILD:-develop}"
     restart: always
     volumes:
-      - ./fmt/data/accounts.json:/app/config/accounts.json:ro
+      - ./fmc/data/accounts.json:/app/config/accounts.json:ro
     ports:
-      - "${FMT_PORT:-8555}:8555"
+      - "${FMC_PORT:-8555}:8555"
     environment:
       - DEBUG=${DEBUG:-}
-      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/fmt}
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/fmc}
       - BOT_PROVIDER=${BOT_PROVIDER:-https://bot.chatopera.com}
     depends_on:
       - mongodb

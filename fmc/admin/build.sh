@@ -7,7 +7,7 @@
 baseDir=$(cd `dirname "$0"`;pwd)
 rootDir=$baseDir/..
 registry=
-imagename=chatopera/fmt
+imagename=chatopera/fmc
 # functions
 
 # main 
