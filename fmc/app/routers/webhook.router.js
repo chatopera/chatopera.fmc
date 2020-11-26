@@ -47,13 +47,13 @@ exports.post_webhook = async (ctx) => {
           );
           let YorNId = messagingEvent.postback?.payload.substring(9);
           chatService.commentQuery(senderId, evaluationResults, YorNId);
-        } else if (messagingEvent.postback?.payload == 'startChatopera') {
+        } else if (messagingEvent.postback?.payload == '__faq_hot_list') {
           try {
             await chatService.syncUserLocale(senderId);
           } catch (e) {
-            console.error('sync user locale error %s', e);
+            debug('sync user locale error', e);
           }
-          chatService.query(senderId, '__kickoff');
+          chatService.query(senderId, messagingEvent.postback?.payload);
         } else if (/^faq-(.+)/.test(messagingEvent.postback?.payload)) {
           let match = messagingEvent.postback.payload.match(/^faq-(.+)/);
           if (match) {
@@ -63,7 +63,11 @@ exports.post_webhook = async (ctx) => {
           let msg = messagingEvent.message?.text;
           // let quick_reply = messagingEvent.message?.quick_reply?.payload;
           let postback = messagingEvent.postback?.payload;
-          chatService.query(senderId, postback ?? msg);
+          let final = postback ?? msg;
+
+          // skip empty or undefined messages
+          // https://github.com/chatopera/chatopera.fmc/issues/1
+          if (final) chatService.query(senderId, final);
         }
       }
     }

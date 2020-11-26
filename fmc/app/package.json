@@ -1,7 +1,7 @@
 {
   "name": "@chatopera/fmc",
   "version": "1.0.0",
-  "description": "🐝 boot your bots in Facebook Messegner with Chatopera in minutes.",
+  "description": "🐝 boot your bots in Facebook Messenger with Chatopera in minutes.",
   "main": "app.js",
   "scripts": {
     "start": "babel-node app.js",

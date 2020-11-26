@@ -11,6 +11,12 @@ const config = {
   MONGO_URI: process.env['MONGO_URI'] || 'mongodb://mongodb:27017/fmc',
   BOT_PROVIDER: process.env['BOT_PROVIDER'] || 'https://bot.chatopera.com',
   PORT: process.env['PORT'] || 8555,
+  FAQ_BEST_REPLY_THRESHOLD: process.env['FAQ_BEST_REPLY_THRESHOLD']
+    ? Number(process.env['FAQ_BEST_REPLY_THRESHOLD'])
+    : 0.8,
+  FAQ_SUGG_REPLY_THRESHOLD: process.env['FAQ_SUGG_REPLY_THRESHOLD']
+    ? Number(process.env['FAQ_SUGG_REPLY_THRESHOLD'])
+    : 0.3,
   accounts,
 };
 

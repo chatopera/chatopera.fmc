@@ -20,15 +20,20 @@ class ChatoperaService {
     this.chatbot = new Chatbot(clientId, secret, config.BOT_PROVIDER);
   }
 
-  async conversationQuery(fromUserId, textMessage) {
+  async conversationQuery(
+    fromUserId,
+    textMessage,
+    faqBestReplyThreshold = 0.8,
+    faqSuggReplyThreshold = 0.3
+  ) {
     let { rc, error, data } = await this.chatbot.command(
       'POST',
       '/conversation/query',
       {
         fromUserId,
         textMessage,
-        //   faqBestReplyThreshold: 0.6,
-        //   faqSuggReplyThreshold: 0.35,
+        faqBestReplyThreshold,
+        faqSuggReplyThreshold,
       }
     );
 

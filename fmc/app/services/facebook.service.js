@@ -168,6 +168,14 @@ class FacebookService {
       .json();
 
     debug('getPersonProfile res %s', JSON.stringify(body, null, 2));
+    // profile sample data
+    //{
+    //   "locale": "en_US",
+    //   "first_name": "Hai Liang",
+    //   "last_name": "Wang",
+    //   "profile_pic": "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=4490913257587256&width=1024&ext=1608966959&hash=AeQjAiGr-n4SEAw5JME",
+    //   "id": "xxxx"
+    // }
 
     if (body.error) {
       debug('facebook api error %s', JSON.stringify(body.error, null, 2));

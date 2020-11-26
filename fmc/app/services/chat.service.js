@@ -23,15 +23,23 @@ class ChatService {
     debug('chat service: pageId(%s), userId(%s)', pageId, userId);
     this.pageId = pageId;
     this.userId = userId;
-    this.account = null;
     this.locale = CONSTANTS.DV_LOCALE;
+    this.user = null;
+    this.account = null;
   }
 
   async init() {
     this.facebook = facebookService.getInstance(this.pageId);
     // reload user from db
-    const user = await User.findById(this.userId).exec();
-    this.locale = user?.locale || CONSTANTS.DV_LOCALE;
+    this.user = await User.findById(this.userId).exec();
+
+    // not found, or no locale present, force re-sync
+    if (this.user?.locale) {
+      debug('user or user locale not present, force re-sync ...');
+      this.user = this.syncUserLocale(this.userId, false);
+    }
+
+    this.locale = this.user?.locale || CONSTANTS.DV_LOCALE;
     this.account = getAccountByPageId(config.accounts, this.pageId);
     this.chatbot = chatbotService.getInstance(this.pageId, this.locale);
 
@@ -47,21 +55,26 @@ class ChatService {
   }
 
   query(senderId, key) {
-    debug('user %s query %s on %s', senderId, key, this.pageId);
-
+    debug('user %s query %s on pageId(%s)', senderId, key, this.pageId);
     this.chatbotQuery(senderId, key).catch(console.error);
   }
 
-  async syncUserLocale(psid) {
+  async syncUserLocale(psid, init = true) {
     let info = await this.facebook.getPersonProfile(psid);
     await User.findByIdAndUpdate(psid, { $set: info }, { upsert: true });
-    await this.init();
+    if (init) await this.init();
+    return info;
   }
 
   async chatbotQuery(senderId, msg, isFaqClick) {
     debug(' user %s query msg', senderId, msg);
 
-    let kickoffResult = await this.chatbot.conversationQuery(senderId, msg);
+    let kickoffResult = await this.chatbot.conversationQuery(
+      senderId,
+      msg,
+      config.FAQ_BEST_REPLY_THRESHOLD,
+      config.FAQ_SUGG_REPLY_THRESHOLD
+    );
 
     if (kickoffResult.logic_is_fallback) {
       if (kickoffResult.faq?.length > 0) {
