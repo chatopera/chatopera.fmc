@@ -13,7 +13,7 @@ exports.get_greetings = async function () {
       },
       {
         type: "plain",
-        content: "联系我们",
+        content: "联系方式",
       },
     ],
   };
