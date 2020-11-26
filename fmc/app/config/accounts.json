@@ -4,11 +4,11 @@
     "appId": "",
     "appSecret": "",
     "pages": [{ "pageId": "", "access_token": "" }],
+    "localeDefault": "zh_CN",
     "chatopera": {
-      "fallback": {
+      "zh_CN": {
         "clientId": "",
         "secret": "",
-        "lang": "en_US",
         "custom": {
           "GUESS_MSG": "推荐问题",
           "HELPFUL_MSG": "以上信息有帮助吗？",
@@ -29,7 +29,6 @@
       "en_US": {
         "clientId": "",
         "secret": "",
-        "lang": "en_US",
         "custom": {
           "GUESS_MSG": "Ask instead for",
           "HELPFUL_MSG": "Was this information helpful?",

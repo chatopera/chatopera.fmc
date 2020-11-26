@@ -17,7 +17,7 @@ exports.get_webhook = (ctx) => {
 
 exports.post_webhook = async (ctx) => {
   let { object, entry } = ctx.request.body;
-  debug('webhook body %s', JSON.stringify(entry, null, 2));
+  debug('webhook body %s', JSON.stringify(entry, null, ' '));
 
   if (object == 'page') {
     for (let e of entry) {
@@ -48,16 +48,15 @@ exports.post_webhook = async (ctx) => {
           let YorNId = messagingEvent.postback?.payload.substring(9);
           chatService.commentQuery(senderId, evaluationResults, YorNId);
         } else if (messagingEvent.postback?.payload == '__faq_hot_list') {
-          try {
-            await chatService.syncUserLocale(senderId);
-          } catch (e) {
-            debug('sync user locale error', e);
-          }
-          chatService.query(senderId, messagingEvent.postback?.payload);
+          chatService.chat(senderId, messagingEvent.postback?.payload);
         } else if (/^faq-(.+)/.test(messagingEvent.postback?.payload)) {
           let match = messagingEvent.postback.payload.match(/^faq-(.+)/);
           if (match) {
-            await chatService.chatbotQuery(senderId, match[1], true);
+            await chatService.chatbotConversationQuery(
+              senderId,
+              match[1],
+              true
+            );
           }
         } else {
           let msg = messagingEvent.message?.text;
@@ -67,7 +66,7 @@ exports.post_webhook = async (ctx) => {
 
           // skip empty or undefined messages
           // https://github.com/chatopera/chatopera.fmc/issues/1
-          if (final) chatService.query(senderId, final);
+          if (final) chatService.chat(senderId, final);
         }
       }
     }

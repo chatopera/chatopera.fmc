@@ -11,9 +11,6 @@
 const debug = require('debug')('fmc:services:chatopera');
 const { Chatbot } = require('@chatopera/sdk');
 const config = require('../config');
-const _ = require('lodash');
-const CONSTANTS = require('../miscs/constants');
-const { getAccountByPageId } = require('../miscs/utils');
 
 class ChatoperaService {
   constructor(clientId, secret) {
@@ -40,29 +37,27 @@ class ChatoperaService {
     if (rc != 0) {
       throw new Error(error);
     }
+    debug('[conversationQuery] result', JSON.stringify(data, null, ' '));
 
     return data;
   }
 }
 
-exports.getInstance = (pageId, locale) => {
-  let account = getAccountByPageId(config.accounts, pageId);
+exports.getInstance = (pageId, locale, account) => {
   if (!account) {
     throw new Error('app %s account config not found.', pageId);
   }
 
-  locale = locale || CONSTANTS.DV_LOCALE;
   let chatbotConfig = account.chatopera[locale];
-
-  if (!chatbotConfig) {
-    chatbotConfig = account.chatopera[CONSTANTS.DV_LOCALE];
-  }
 
   if (!chatbotConfig) {
     throw new Error(`locale ${locale} bot not found.`);
   }
 
-  debug('resolve bot instance settings', chatbotConfig);
+  //   debug(
+  //     'resolve bot instance settings',
+  //     JSON.stringify(chatbotConfig, null, ' ')
+  //   );
 
   return new ChatoperaService(chatbotConfig.clientId, chatbotConfig.secret);
 };

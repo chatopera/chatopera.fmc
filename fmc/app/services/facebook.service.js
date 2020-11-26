@@ -10,14 +10,12 @@
 //===============================================================================
 const got = require('got');
 const _ = require('lodash');
-const config = require('../config');
 const debug = require('debug')('fmc:service:facebook');
-const {
-  getAccountByPageId,
-  getAccessTokenByPageId,
-} = require('../miscs/utils');
+const { getAccessTokenByPageId } = require('../miscs/utils');
 
 const FACEBOOK_MESSAGES_API = 'https://graph.facebook.com/v2.6/me/messages';
+const FACEBOOK_MESSENGER_PROFILE_API =
+  'https://graph.facebook.com/v2.6/me/messenger_profile';
 
 class FacebookService {
   constructor(pageId, access_token) {
@@ -25,6 +23,12 @@ class FacebookService {
     this.access_token = access_token;
   }
 
+  /**
+   * Send text message by recipientId
+   * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+   * @param {*} recipientId
+   * @param {*} msg
+   */
   async sendTextMessage(recipientId, msg) {
     debug('sendTextMessage (%s, %s)', recipientId, msg);
     let body = await got
@@ -46,6 +50,12 @@ class FacebookService {
     debug('sendTextMessage res %s', JSON.stringify(body, null, 2));
   }
 
+  /**
+   * Send quick reply
+   * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+   * @param {*} recipientId
+   * @param {*} replyMessage
+   */
   async sendQuickReply(recipientId, replyMessage) {
     let body = await got
       .post(FACEBOOK_MESSAGES_API, {
@@ -63,6 +73,13 @@ class FacebookService {
     debug('sendQuickReply res %s', JSON.stringify(body, null, 2));
   }
 
+  /**
+   * Send button messages
+   * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+   * @param {*} recipientId
+   * @param {*} msg
+   * @param {*} buttons
+   */
   async sendButtonMessage(recipientId, msg, buttons) {
     debug('sendButtonMessage (%s, %s)', recipientId, msg);
     let body = await got
@@ -91,6 +108,12 @@ class FacebookService {
     return body;
   }
 
+  /**
+   * Send a image via url
+   * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+   * @param {*} recipientId
+   * @param {*} imageUrl
+   */
   async sendImageMessage(recipientId, imageUrl) {
     debug('sendImageMessage (%s, %s)', recipientId, imageUrl);
     let body = await got
@@ -116,7 +139,13 @@ class FacebookService {
     debug('sendImageMessage res %s', JSON.stringify(body, null, 2));
   }
 
-  // 发送一次性通知请求
+  /**
+   * 发送一次性通知请求
+   * https://developers.facebook.com/docs/messenger-platform/send-messages/one-time-notification
+   * @param {*} recipientId
+   * @param {*} replyMessage
+   * @param {*} ref
+   */
   async sendOnetimeNotReq(recipientId, replyMessage, ref) {
     let { body } = await got.post(FACEBOOK_MESSAGES_API, {
       searchParams: {
@@ -140,7 +169,9 @@ class FacebookService {
     });
   }
 
-  // 发送一次性通知
+  /**
+   * 发送一次性通知
+   */
   async sendOnetimeNot(token, msg) {
     let { body } = await got.post(FACEBOOK_MESSAGES_API, {
       searchParams: {
@@ -157,6 +188,11 @@ class FacebookService {
     });
   }
 
+  /**
+   * 获得用户的个人资料
+   * https://developers.facebook.com/docs/messenger-platform/identity
+   * @param {*} psid
+   */
   async getPersonProfile(psid) {
     let body = await got
       .get(`https://graph.facebook.com/${psid}`, {
@@ -183,13 +219,47 @@ class FacebookService {
 
     return body;
   }
+
+  /**
+   * Setting the Get Started Button Postback
+   * https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen
+   */
+  async setGetStartedButton(payload) {
+    let { body } = await got.post(FACEBOOK_MESSENGER_PROFILE_API, {
+      searchParams: {
+        access_token: this.access_token,
+      },
+      json: {
+        get_started: { payload },
+      },
+    });
+
+    debug('[setGetStartedButton] result', body);
+  }
+
+  /**
+   * Set greeting text
+   * https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen
+   * @param {*} payload
+   */
+  async setGreetingText(greeting) {
+    let { body } = await got.post(FACEBOOK_MESSENGER_PROFILE_API, {
+      searchParams: {
+        access_token: this.access_token,
+      },
+      json: {
+        greeting,
+      },
+    });
+
+    debug('[setGreetingText] result', body);
+  }
 }
 
 const facebookInstance = {};
-const facebookFactory = (pageId) => {
+const facebookFactory = (pageId, account) => {
   let instance = facebookInstance[pageId];
   if (!instance) {
-    let account = getAccountByPageId(config.accounts, pageId);
     let access_token = getAccessTokenByPageId(account, pageId);
     if (account) {
       instance = new FacebookService(pageId, access_token);

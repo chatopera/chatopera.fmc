@@ -10,7 +10,7 @@
 //===============================================================================
 const facebookService = require('./facebook.service');
 const debug = require('debug')('fmc:service:chat');
-const chatbotService = require('./chatopera.service');
+const chatoperaService = require('./chatopera.service');
 const _ = require('lodash');
 const { User, AnswerComment } = require('../models');
 const { v4: uuidv4 } = require('uuid');
@@ -21,27 +21,32 @@ const { getAccountByPageId } = require('../miscs/utils');
 class ChatService {
   constructor(pageId, userId) {
     debug('chat service: pageId(%s), userId(%s)', pageId, userId);
+    // quick retrieve infos independent from 3rd services
     this.pageId = pageId;
     this.userId = userId;
-    this.locale = CONSTANTS.DV_LOCALE;
+    this.account = getAccountByPageId(config.accounts, this.pageId);
+    this.locale = null;
     this.user = null;
-    this.account = null;
   }
 
   async init() {
-    this.facebook = facebookService.getInstance(this.pageId);
+    this.facebook = facebookService.getInstance(this.pageId, this.account);
     // reload user from db
     this.user = await User.findById(this.userId).exec();
 
     // not found, or no locale present, force re-sync
     if (this.user?.locale) {
       debug('user or user locale not present, force re-sync ...');
-      this.user = this.syncUserLocale(this.userId, false);
+      this.user = this.syncUserLocale(this.userId);
     }
 
-    this.locale = this.user?.locale || CONSTANTS.DV_LOCALE;
-    this.account = getAccountByPageId(config.accounts, this.pageId);
-    this.chatbot = chatbotService.getInstance(this.pageId, this.locale);
+    this.locale =
+      this.user?.locale || this.account?.localeDefault || CONSTANTS.DV_LOCALE;
+    this.brain = chatoperaService.getInstance(
+      this.pageId,
+      this.locale,
+      this.account
+    );
 
     this.msgs = {
       GUESS_MSG: CONSTANTS.DV_GUESS_MSG,
@@ -54,31 +59,42 @@ class ChatService {
     };
   }
 
-  query(senderId, key) {
+  chat(senderId, key) {
     debug('user %s query %s on pageId(%s)', senderId, key, this.pageId);
-    this.chatbotQuery(senderId, key).catch(console.error);
+    this.chatbotConversationQuery(senderId, key).catch(console.error);
   }
 
-  async syncUserLocale(psid, init = true) {
-    let info = await this.facebook.getPersonProfile(psid);
-    await User.findByIdAndUpdate(psid, { $set: info }, { upsert: true });
-    if (init) await this.init();
-    return info;
+  /**
+   * retrieve user profile info from facebook, set into db
+   * @param {*} psid
+   * @param {*} init reinit chat service or not
+   */
+  async syncUserLocale(psid) {
+    let profile = await this.facebook.getPersonProfile(psid);
+    await User.findByIdAndUpdate(psid, { $set: profile }, { upsert: true });
+    return profile;
   }
 
-  async chatbotQuery(senderId, msg, isFaqClick) {
-    debug(' user %s query msg', senderId, msg);
+  /**
+   * 请求多轮对话检索接口，处理返回值
+   * @param {*} senderId
+   * @param {*} msg
+   * @param {*} isFaqClick
+   */
+  async chatbotConversationQuery(senderId, msg, isFaqClick) {
+    debug('[chatbotConversationQuery] user %s query msg', senderId, msg);
 
-    let kickoffResult = await this.chatbot.conversationQuery(
+    let response = await this.brain.conversationQuery(
       senderId,
       msg,
       config.FAQ_BEST_REPLY_THRESHOLD,
       config.FAQ_SUGG_REPLY_THRESHOLD
     );
 
-    if (kickoffResult.logic_is_fallback) {
-      if (kickoffResult.faq?.length > 0) {
-        let faq = _.take(kickoffResult.faq, 3);
+    if (response.logic_is_fallback) {
+      // if no faq data returns, bot would be silent.
+      if (response.faq?.length > 0) {
+        let faq = _.take(response.faq, 3);
         await this.facebook.sendButtonMessage(
           senderId,
           this.msgs.GUESS_MSG,
@@ -91,18 +107,18 @@ class ChatService {
           })
         );
       }
-    } else if (kickoffResult.string == '#in-params#') {
-      for (let p of kickoffResult.params) {
+    } else if (response.string == '#in-params#') {
+      for (let p of response.params) {
         if (p.type == 'card') {
           await this.facebook.sendImageMessage(senderId, p.thumbnail);
         } else if (p.type == 'plain') {
           await this.facebook.sendTextMessage(senderId, p.text);
         }
       }
-    } else if (kickoffResult.service?.provider == 'faq') {
-      let resultMsg = kickoffResult.string + '\n\n' + this.msgs.HELPFUL_MSG;
+    } else if (response.service?.provider == 'faq') {
+      let resultMsg = response.string + '\n\n' + this.msgs.HELPFUL_MSG;
       if (isFaqClick) {
-        resultMsg = kickoffResult.service?.post + '\n\n' + resultMsg;
+        resultMsg = response.service?.post + '\n\n' + resultMsg;
       }
 
       let yesId = uuidv4();
@@ -128,13 +144,13 @@ class ChatService {
         noId: noId,
         comment: '',
         status: false,
-        docId: kickoffResult.service?.docId, //知识库问答对id
-        question: kickoffResult.service?.post, //知识库问题
-        answer: kickoffResult.string, //知识库答案
+        docId: response.service?.docId, //知识库问答对id
+        question: response.service?.post, //知识库问题
+        answer: response.string, //知识库答案
       });
       debug(answerComment);
     } else {
-      await this.facebook.sendTextMessage(senderId, kickoffResult.string);
+      await this.facebook.sendTextMessage(senderId, response.string);
     }
   }
 

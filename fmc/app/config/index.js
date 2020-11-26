@@ -14,9 +14,10 @@ const config = {
   FAQ_BEST_REPLY_THRESHOLD: process.env['FAQ_BEST_REPLY_THRESHOLD']
     ? Number(process.env['FAQ_BEST_REPLY_THRESHOLD'])
     : 0.8,
+  // give more info if possible
   FAQ_SUGG_REPLY_THRESHOLD: process.env['FAQ_SUGG_REPLY_THRESHOLD']
     ? Number(process.env['FAQ_SUGG_REPLY_THRESHOLD'])
-    : 0.3,
+    : 0.0001,
   accounts,
 };
 
