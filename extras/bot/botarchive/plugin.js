@@ -80,8 +80,8 @@ exports.get_contact_us_btn = async function () {
           payload: "+8613691490568",
         },
         {
-          type: "web_url",
-          url: "https://www.chatopera.com/mail.html",
+          type: "postback",
+          payload: "华夏春松获取发票",
           title: "发票",
         },
         {

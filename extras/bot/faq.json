@@ -1,5 +1,20 @@
 [
   {
+    "docId": "AXYKVWb1ajEyTPAgKawG",
+    "categories": [
+      "公司介绍"
+    ],
+    "enabled": true,
+    "post": "华夏春松获取发票",
+    "replies": [
+      {
+        "rtype": "plain",
+        "content": "请将您的开票信息发送到邮箱：info@chatopera.com，邮件标题：【发票】华夏春松产品 XXX"
+      }
+    ],
+    "similarQuestions": []
+  },
+  {
     "docId": "AXYDXuXnajEyTPAgKasx",
     "categories": [
       "公司介绍"
