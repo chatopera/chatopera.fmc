@@ -5,11 +5,11 @@
       "公司介绍"
     ],
     "enabled": true,
-    "post": "Chatopera 机器人平台",
+    "post": "Chatopera 机器人平台简介",
     "replies": [
       {
         "rtype": "plain",
-        "content": "Chatopera 机器人平台帮助企业定制化开发聊天机器人，产品介绍 https://docs.chatopera.com/products/chatbot-platform/index.html"
+        "content": "Chatopera 机器人平台帮助企业定制化开发聊天机器人，支持销售导购、售后客服等场景，利用自动化程序降本增效。"
       }
     ],
     "similarQuestions": []
@@ -20,11 +20,11 @@
       "公司介绍"
     ],
     "enabled": true,
-    "post": "春松客服",
+    "post": "春松客服简介",
     "replies": [
       {
         "rtype": "plain",
-        "content": "春松客服是拥有机器人客服、呼叫中心、数据分析、CRM 等功能于一身的新一代客服系统。产品介绍 https://docs.chatopera.com/products/cskefu/index.html"
+        "content": "春松客服是拥有机器人客服、呼叫中心、数据分析和CRM 等功能于一身的新一代客服系统。"
       }
     ],
     "similarQuestions": []
@@ -59,23 +59,6 @@
     ],
     "similarQuestions": [
       "联系我们"
-    ]
-  },
-  {
-    "docId": "AXYC0uMOajEyTPAgKasC",
-    "categories": [
-      "公司介绍"
-    ],
-    "enabled": true,
-    "post": "产品介绍",
-    "replies": [
-      {
-        "rtype": "plain",
-        "content": "产品有春松客服、Chatopera 机器人平台。 春松客服是多渠道智能客服系统；Chatopera 机器人平台专注定制化开发机器人客服，与春松客服集成使用。"
-      }
-    ],
-    "similarQuestions": [
-      "产品"
     ]
   }
 ]

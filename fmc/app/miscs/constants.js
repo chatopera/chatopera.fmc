@@ -17,6 +17,6 @@ exports = module.exports = {
   DV_LOCALE: 'zh_CN',
   DV_HELPFUL_FEEDBACK_YES_BTN: 'YES',
   DV_HELPFUL_FEEDBACK_NO_BTN: 'NO',
-  DV_GET_START_TEXT: '__faq_hot_list',
+  DV_GET_START_TEXT: '__me_get_start',
   DV_GREETING_TEXT: 'Hello!',
 };

@@ -165,7 +165,13 @@ logic.use(async function (ctx, next) {
     config.FAQ_SUGG_REPLY_THRESHOLD
   );
 
+  // 一次性处理字符串，避免后续重复操作
+  if (ctx.response?.string && typeof ctx.response.string == 'string') {
+    ctx.response.string = ctx.response.string.trim();
+  }
+
   ctx.resolved = false;
+
   await next();
 });
 
@@ -194,7 +200,9 @@ logic.use(async function (ctx, next) {
     // 如果 ctx.response.faq 没有数据，此时 bot 不发送消息，保持沉默
     // 解决方案是：1）补充 FAQ；2）FAQ_SUGG_REPLY_THRESHOLD 尽量小，甚至为 0
     ctx.resolved = true;
-  } else {
+  }
+
+  if (!ctx.resolved) {
     await next();
   }
 });
@@ -213,7 +221,9 @@ logic.use(async function (ctx, next) {
       }
     }
     ctx.resolved = true;
-  } else {
+  }
+
+  if (!ctx.resolved) {
     await next();
   }
 });
@@ -257,7 +267,61 @@ logic.use(async function (ctx, next) {
       answer: ctx.response.string, //知识库答案
     });
     ctx.resolved = true;
-  } else {
+  }
+
+  if (!ctx.resolved) {
+    await next();
+  }
+});
+
+/**
+ * 1) 处理来自多轮对话的 generic template 消息，显示为图文等形式
+ * 2) 不是 generic 消息：next()
+ */
+logic.use(async function (ctx, next) {
+  if (!ctx.resolved && ctx.response.service?.provider == 'conversation') {
+    // 检查是否定义 generic
+    if (ctx.response.string.startsWith('#generic#')) {
+      if (_.isArray(ctx.response.params?.render)) {
+        // Generic Template deifination
+        // https://developers.facebook.com/docs/messenger-platform/send-messages/template/generic
+        await ctx.facebook.sendGenericTemplateMessage(
+          ctx.senderId,
+          ctx.response.params.render,
+          ctx.response.params.quick_replies
+        );
+        ctx.resolved = true;
+      }
+    }
+  }
+
+  if (!ctx.resolved) {
+    await next();
+  }
+});
+
+/**
+ * 1) 出来来自多轮对话的 button 消息，显示为按钮模版
+ * 2) 不是按钮消息：next()
+ */
+logic.use(async function (ctx, next) {
+  // 按钮模版：https://developers.facebook.com/docs/messenger-platform/send-messages/template/button
+  // 按钮：https://developers.facebook.com/docs/messenger-platform/send-messages/buttons
+  if (!ctx.resolved && ctx.response.service?.provider == 'conversation') {
+    // 检查是否定义 button
+    if (ctx.response.string.startsWith('#buttons#')) {
+      let title = ctx.response.string.slice(9);
+      await ctx.facebook.sendButtonMessage(
+        ctx.senderId,
+        title,
+        ctx.response.params.render,
+        ctx.response.params.quick_replies
+      );
+      ctx.resolved = true;
+    }
+  }
+
+  if (!ctx.resolved) {
     await next();
   }
 });
@@ -269,22 +333,31 @@ logic.use(async function (ctx, next) {
 logic.use(async function (ctx, next) {
   if (!ctx.resolved && ctx.response.service?.provider == 'conversation') {
     // 发送多轮对话里传送的列表消息
-    let title = ctx.response.string;
-    if (!title) title = ctx.msgs.GUESS_MSG;
+    let title = ctx.response?.string ?? ctx.msgs.GUESS_MSG;
 
     let payload = [];
-    if (_.isArray(ctx.response.params) && ctx.response.params.length > 0) {
-      for (let x of ctx.response.params) {
+    if (
+      _.isArray(ctx.response.params?.render) &&
+      ctx.response.params.render.length > 0
+    ) {
+      for (let x of ctx.response.params.render) {
         if (x.type !== 'postback') continue;
         payload.push(x);
       }
     }
 
     if (payload.length > 0) {
-      await ctx.facebook.sendButtonMessage(ctx.senderId, title, payload);
+      await ctx.facebook.sendButtonMessage(
+        ctx.senderId,
+        title,
+        payload,
+        ctx.response.params.quick_replies
+      );
       ctx.resolved = true;
     }
-  } else {
+  }
+
+  if (!ctx.resolved) {
     await next();
   }
 });
@@ -294,9 +367,15 @@ logic.use(async function (ctx, next) {
  */
 logic.use(async function (ctx, next) {
   if (!ctx.resolved && ctx.response.string) {
-    await ctx.facebook.sendTextMessage(ctx.senderId, ctx.response.string);
+    await ctx.facebook.sendTextMessage(
+      ctx.senderId,
+      ctx.response.string,
+      ctx.response?.params?.quick_replies
+    );
     ctx.resolved = true;
-  } else {
+  }
+
+  if (!ctx.resolved) {
     await next();
   }
 });

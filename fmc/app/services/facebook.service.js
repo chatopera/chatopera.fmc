@@ -31,7 +31,7 @@ class FacebookService {
    * @param {*} recipientId
    * @param {*} msg
    */
-  async sendTextMessage(recipientId, msg) {
+  async sendTextMessage(recipientId, msg, quickReplies) {
     debug('sendTextMessage (%s, %s)', recipientId, msg);
     let body = await got
       .post(FACEBOOK_MESSAGES_API, {
@@ -44,6 +44,9 @@ class FacebookService {
           },
           message: {
             text: msg,
+            // set quick replies
+            // https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+            quick_replies: quickReplies,
             metadata: 'DEVELOPER_DEFINED_METADATA',
           },
         },
@@ -53,12 +56,12 @@ class FacebookService {
   }
 
   /**
-   * Send quick reply
-   * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
+   * Abstract API for all
+   *
    * @param {*} recipientId
    * @param {*} replyMessage
    */
-  async sendQuickReply(recipientId, replyMessage) {
+  async sendMessage(recipientId, message) {
     let body = await got
       .post(FACEBOOK_MESSAGES_API, {
         searchParams: {
@@ -68,11 +71,51 @@ class FacebookService {
           recipient: {
             id: recipientId,
           },
-          message: replyMessage,
+          messaging_type: 'RESPONSE',
+          message,
         },
       })
       .json();
-    debug('sendQuickReply res %s', JSON.stringify(body, null, 2));
+    debug('sendQuickReplies res %s', JSON.stringify(body, null, 2));
+  }
+
+  /**
+   * 发送通用组件消息
+   * https://developers.facebook.com/docs/messenger-platform/send-messages/template/generic
+   * @param {*} recipientId
+   * @param {*} body
+   */
+  async sendGenericTemplateMessage(recipientId, elements, quickReplies) {
+    debug(
+      'sendGenericTemplateMessage %s, %s',
+      recipientId,
+      JSON.stringify(elements, null, ' ')
+    );
+
+    let body = await got
+      .post(FACEBOOK_MESSAGES_API, {
+        searchParams: {
+          access_token: this.access_token,
+        },
+        json: {
+          recipient: {
+            id: recipientId,
+          },
+          message: {
+            quick_replies: quickReplies,
+            attachment: {
+              type: 'template',
+              payload: {
+                template_type: 'generic',
+                elements,
+              },
+            },
+          },
+        },
+      })
+      .json();
+    debug('sendGenericTemplateMessage res %s', JSON.stringify(body, null, 2));
+    return body;
   }
 
   /**
@@ -82,7 +125,7 @@ class FacebookService {
    * @param {*} msg
    * @param {*} buttons
    */
-  async sendButtonMessage(recipientId, msg, buttons) {
+  async sendButtonMessage(recipientId, msg, buttons, quickReplies) {
     debug('sendButtonMessage (%s, %s)', recipientId, msg);
     let body = await got
       .post(FACEBOOK_MESSAGES_API, {
@@ -94,6 +137,7 @@ class FacebookService {
             id: recipientId,
           },
           message: {
+            quick_replies: quickReplies,
             attachment: {
               type: 'template',
               payload: {
@@ -116,7 +160,7 @@ class FacebookService {
    * @param {*} recipientId
    * @param {*} imageUrl
    */
-  async sendImageMessage(recipientId, imageUrl) {
+  async sendImageMessage(recipientId, imageUrl, quickReplies) {
     debug('sendImageMessage (%s, %s)', recipientId, imageUrl);
     let body = await got
       .post(FACEBOOK_MESSAGES_API, {
@@ -128,6 +172,7 @@ class FacebookService {
             id: recipientId,
           },
           message: {
+            quick_replies: quickReplies,
             attachment: {
               type: 'image',
               payload: {
