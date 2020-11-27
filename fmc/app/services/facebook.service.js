@@ -293,7 +293,11 @@ async function init() {
       // facebook messenger 设置 get start button
       if (defined.has(p.pageId)) continue;
       let me = facebookFactory(p.pageId, x);
-      await me.setGetStartedButton(DV_GET_START_TEXT);
+      try {
+        await me.setGetStartedButton(DV_GET_START_TEXT);
+      } catch (error) {
+        console.error('setGetStartedButton', error);
+      }
 
       // facebook messenger 设置 greeting text
       let defaultLocale = _.get(x, 'localeDefault');
@@ -319,7 +323,11 @@ async function init() {
         }
       }
 
-      await me.setGreetingText(greeting);
+      try {
+        await me.setGreetingText(greeting);
+      } catch (error) {
+        console.error('setGreetingText', error);
+      }
     }
   }
 }

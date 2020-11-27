@@ -84,100 +84,17 @@ class ChatService {
       this.pageId,
       isFaqClick
     );
-    let response = await this.brain.conversationQuery(
+    logic.handle({
+      brain: this.brain,
+      facebook: this.facebook,
+      msgs: this.msgs,
+      pageId: this.pageId,
+      user: this.user,
+      account: this.account,
       senderId,
       msg,
-      config.FAQ_BEST_REPLY_THRESHOLD,
-      config.FAQ_SUGG_REPLY_THRESHOLD
-    );
-
-    if (response.logic_is_fallback) {
-      // if no faq data returns, bot would be silent.
-      if (response.faq?.length > 0) {
-        let faq = _.take(response.faq, 3);
-        await this.facebook.sendButtonMessage(
-          senderId,
-          this.msgs.GUESS_MSG,
-          _.map(faq, (f) => {
-            return {
-              type: 'postback',
-              title: f.post,
-              payload: `faq-${f.post}`,
-            };
-          })
-        );
-      }
-    } else if (response.string == '#in-params#') {
-      for (let p of response.params) {
-        if (p.type == 'card') {
-          await this.facebook.sendImageMessage(senderId, p.thumbnail);
-        } else if (p.type == 'plain') {
-          await this.facebook.sendTextMessage(senderId, p.text);
-        }
-      }
-    } else if (response.service?.provider == 'faq') {
-      let resultMsg = response.string + '\n\n' + this.msgs.HELPFUL_MSG;
-      if (isFaqClick) {
-        resultMsg = response.service?.post + '\n\n' + resultMsg;
-      }
-
-      let yesId = uuidv4();
-      let noId = uuidv4();
-      let body = await this.facebook.sendButtonMessage(senderId, resultMsg, [
-        {
-          type: 'postback',
-          title: this.msgs.HELPFUL_FEEDBACK_YES_BTN,
-          payload: 'evaluate' + 'Y' + yesId,
-        },
-        {
-          type: 'postback',
-          title: this.msgs.HELPFUL_FEEDBACK_NO_BTN,
-          payload: 'evaluate' + 'N' + noId,
-        },
-      ]);
-      let _messageId = body.message_id;
-      var answerComment = await AnswerComment.create({
-        userId: senderId,
-        pageId: this.pageId,
-        messageId: _messageId,
-        yesId: yesId,
-        noId: noId,
-        comment: '',
-        status: false,
-        docId: response.service?.docId, //知识库问答对id
-        question: response.service?.post, //知识库问题
-        answer: response.string, //知识库答案
-      });
-      debug(answerComment);
-    } else if (
-      response.service?.provider == 'conversation' &&
-      response.string.startsWith('#list#')
-    ) {
-      // 发送多轮对话里传送的列表消息
-      let title = response.string.slice(6);
-      if (typeof title === 'string') title = title.trim();
-      if (!title) title = this.msgs.GUESS_MSG;
-
-      if (_.isArray(response.params) && response.params.length > 0) {
-        let payload = [];
-        for (let x of response.params) {
-          if (x.type !== 'plain') continue;
-          if (x.content) {
-            payload.push({
-              type: 'postback',
-              title: x.content,
-              payload: x.content,
-            });
-          }
-        }
-
-        await this.facebook.sendButtonMessage(senderId, title, payload);
-      } else {
-        await this.facebook.sendTextMessage(senderId, title);
-      }
-    } else {
-      await this.facebook.sendTextMessage(senderId, response.string);
-    }
+      isFaqClick,
+    });
   }
 
   /**
@@ -233,6 +150,156 @@ class ChatService {
     this.facebook.sendTextMessage(senderId, '感谢您的关注，上线之后会通知到您');
   }
 }
+
+/**
+ * chat 逻辑
+ */
+const Microloom = require('microloom');
+const logic = new Microloom();
+
+logic.use(async function (ctx, next) {
+  ctx.response = await ctx.brain.conversationQuery(
+    ctx.senderId,
+    ctx.msg,
+    config.FAQ_BEST_REPLY_THRESHOLD,
+    config.FAQ_SUGG_REPLY_THRESHOLD
+  );
+
+  ctx.resolved = false;
+  await next();
+});
+
+/**
+ * 1) 兜底回复时，检查 faq 数据作为建议回复
+ * 2) 否：next()
+ */
+logic.use(async function (ctx, next) {
+  // 兜底回复，检查 FAQ
+  if (!ctx.resolved && ctx.response.logic_is_fallback) {
+    // if no faq data returns, bot would be silent.
+    if (ctx.response.faq?.length > 0) {
+      let faq = _.take(ctx.response.faq, 3);
+      await ctx.facebook.sendButtonMessage(
+        ctx.senderId,
+        ctx.msgs.GUESS_MSG,
+        _.map(faq, (f) => {
+          return {
+            type: 'postback',
+            title: f.post,
+            payload: `faq-${f.post}`,
+          };
+        })
+      );
+    }
+    // 如果 ctx.response.faq 没有数据，此时 bot 不发送消息，保持沉默
+    // 解决方案是：1）补充 FAQ；2）FAQ_SUGG_REPLY_THRESHOLD 尽量小，甚至为 0
+    ctx.resolved = true;
+  } else {
+    await next();
+  }
+});
+
+/**
+ * 1) 检查回复字符串是否是 #in-params# 开头，如果是，处理 params
+ * 2）否：next()
+ */
+logic.use(async function (ctx, next) {
+  if (!ctx.resolved && ctx.response.string.startsWith("'#in-params#'")) {
+    for (let p of ctx.response.params) {
+      if (p.type == 'card') {
+        await ctx.facebook.sendImageMessage(ctx.senderId, p.thumbnail);
+      } else if (p.type == 'plain') {
+        await ctx.facebook.sendTextMessage(ctx.senderId, p.text);
+      }
+    }
+    ctx.resolved = true;
+  } else {
+    await next();
+  }
+});
+
+/**
+ * 1) 处理来自 FAQ 知识库的答案，设置为 postback 来获得反馈
+ * 2) 不是来自 FAQ：next()
+ */
+logic.use(async function (ctx, next) {
+  if (!ctx.resolved && ctx.response.service?.provider == 'faq') {
+    let resultMsg = ctx.response.string + '\n\n' + ctx.msgs.HELPFUL_MSG;
+    if (ctx.isFaqClick) {
+      resultMsg = ctx.response.service?.post + '\n\n' + resultMsg;
+    }
+
+    let yesId = uuidv4();
+    let noId = uuidv4();
+    let body = await ctx.facebook.sendButtonMessage(ctx.senderId, resultMsg, [
+      {
+        type: 'postback',
+        title: ctx.msgs.HELPFUL_FEEDBACK_YES_BTN,
+        payload: 'feedback' + 'Y' + yesId,
+      },
+      {
+        type: 'postback',
+        title: ctx.msgs.HELPFUL_FEEDBACK_NO_BTN,
+        payload: 'feedback' + 'N' + noId,
+      },
+    ]);
+    let _messageId = body.message_id;
+    await AnswerComment.create({
+      userId: ctx.senderId,
+      pageId: ctx.pageId,
+      messageId: _messageId,
+      yesId: yesId,
+      noId: noId,
+      comment: '',
+      status: false,
+      docId: ctx.response.service?.docId, //知识库问答对id
+      question: ctx.response.service?.post, //知识库问题
+      answer: ctx.response.string, //知识库答案
+    });
+    ctx.resolved = true;
+  } else {
+    await next();
+  }
+});
+
+/**
+ * 1) 处理来自多轮对话的 postback 消息，显示为按钮组件
+ * 2) 否：next()
+ */
+logic.use(async function (ctx, next) {
+  if (!ctx.resolved && ctx.response.service?.provider == 'conversation') {
+    // 发送多轮对话里传送的列表消息
+    let title = ctx.response.string;
+    if (!title) title = ctx.msgs.GUESS_MSG;
+
+    let payload = [];
+    if (_.isArray(ctx.response.params) && ctx.response.params.length > 0) {
+      for (let x of ctx.response.params) {
+        if (x.type !== 'postback') continue;
+        payload.push(x);
+      }
+    }
+
+    if (payload.length > 0) {
+      await ctx.facebook.sendButtonMessage(ctx.senderId, title, payload);
+      ctx.resolved = true;
+    }
+  } else {
+    await next();
+  }
+});
+
+/**
+ * 处理默认的 response string
+ */
+logic.use(async function (ctx, next) {
+  if (!ctx.resolved && ctx.response.string) {
+    await ctx.facebook.sendTextMessage(ctx.senderId, ctx.response.string);
+    ctx.resolved = true;
+  } else {
+    await next();
+  }
+});
 
 exports.create = async (pageId, userId) => {
   let instance = new ChatService(pageId, userId);

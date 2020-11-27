@@ -88,7 +88,7 @@ function dispatch(event) {
     action = 'OPEN_THREAD_QUERY';
   } else if (event.optin?.type == 'one_time_notif_req') {
     action = 'OPEN_THREAD_OK_QUERY';
-  } else if (/evaluate/.test(event.postback?.payload)) {
+  } else if (/^feedback/.test(event.postback?.payload)) {
     action = 'FEEDBACK';
   } else if (event.postback?.payload == CONSTANTS.DV_GET_START_TEXT) {
     action = 'GET_START';
