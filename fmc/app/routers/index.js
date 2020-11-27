@@ -13,7 +13,7 @@ const webhook = require('./webhook.router');
 
 const router = new Router();
 
-router.get('/webhook', webhook.get_webhook);
-router.post('/webhook', webhook.post_webhook);
+router.get('/webhook', webhook.get);
+router.post('/webhook', webhook.post);
 
 exports = module.exports = router;

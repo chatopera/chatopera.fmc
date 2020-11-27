@@ -180,7 +180,13 @@ class ChatService {
     }
   }
 
-  async commentQuery(senderId, evaluationResults, YorNId) {
+  /**
+   * 处理用户反馈: 有帮助，没有帮助
+   * @param {*} senderId
+   * @param {*} evaluationResults
+   * @param {*} YorNId
+   */
+  async feedback(senderId, evaluationResults, YorNId) {
     debug(' user %s query evaluationResults', senderId, evaluationResults);
     if (evaluationResults == 'Y') {
       let yesData = await AnswerComment.findOne({ yesId: YorNId });
