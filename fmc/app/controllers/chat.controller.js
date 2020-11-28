@@ -59,11 +59,12 @@ async function handlePageEntry(entry) {
             await chatService.chat(senderId, match[1], true);
           }
           break;
-        case 'FALLBACK':
+        case 'DEFAULT':
           let msg = messagingEvent.message?.text;
-          // let quick_reply = messagingEvent.message?.quick_reply?.payload;
+          let quick_reply = messagingEvent.message?.quick_reply?.payload;
           let postback = messagingEvent.postback?.payload;
-          let final = postback ?? msg;
+          // 优先级: quick_reply > postback > message.text
+          let final = quick_reply ?? postback ?? msg;
 
           // skip empty or undefined messages
           // https://github.com/chatopera/chatopera.fmc/issues/1
@@ -95,7 +96,7 @@ function dispatch(event) {
   } else if (/^faq-(.+)/.test(event.postback?.payload)) {
     action = 'POSTBACK_PAYLOAD_FAQ';
   } else {
-    action = 'FALLBACK';
+    action = 'DEFAULT';
   }
   return action;
 }

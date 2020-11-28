@@ -21,3 +21,6 @@
 
 + 产品介绍
 - ^intro_products()
+
++ 猜数字
+- ^topicRedirect("guess_number", "__kickoff_guess_num")

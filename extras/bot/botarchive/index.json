@@ -10,7 +10,17 @@
     {
       "name": "greetings",
       "enabled": true
+    },
+    {
+      "name": "give_me_joke",
+      "enabled": true
+    },
+    {
+      "name": "guess_number",
+      "enabled": true
     }
   ],
-  "config": {}
+  "config": {
+    "JOKES_DATA_URL": "https://gitee.com/chatopera/chatbot-samples/raw/master/projects/%E5%B0%8F%E7%AC%91%E8%AF%9D/assets/jokes.json"
+  }
 }
