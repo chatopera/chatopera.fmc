@@ -34,6 +34,29 @@ let defaultQuickReplies = [
   },
 ];
 
+// 增加快捷回复
+exports.attachQuickReplies = async function () {
+  let attachedQuickReplies = [];
+  if (arguments) {
+    for (let x of _.keys(arguments)) {
+      if (arguments[x].length != 2) continue;
+      if (!_.isArray(arguments[x])) continue;
+      attachedQuickReplies.push({
+        content_type: "text",
+        title: arguments[x][0],
+        payload: arguments[x][1],
+      });
+    }
+  }
+
+  return {
+    text: "",
+    params: {
+      quick_replies: attachedQuickReplies.concat(defaultQuickReplies),
+    },
+  };
+};
+
 // 用户绑定或新进入后，发送欢迎
 exports.get_start = async function () {
   /**
@@ -212,6 +235,31 @@ const fetchJokes = async function () {
   return resp.data;
 };
 
+const joke_web_gifs = [
+  "https://media.giphy.com/media/65ODCwM00NVmEyLsX3/giphy.gif",
+  "https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif",
+  "https://media.giphy.com/media/lOgzjLU2mmN3VoUG4S/giphy.gif",
+  "https://media.giphy.com/media/xFjd9rLvOLkHVzyEZy/giphy.gif",
+  "https://media.giphy.com/media/de5bARu0SsXiU/giphy.gif",
+  "https://media.giphy.com/media/iIj9WrlVHeRdX2JcWN/giphy.gif",
+  "https://media.giphy.com/media/9Ji1s0nTBLlKQEhpLu/giphy.gif",
+  "https://media.giphy.com/media/aVgaFxzKX9E64/giphy.gif",
+  "https://media.giphy.com/media/ABJKEXSFneFHi/giphy.gif",
+  "https://media.giphy.com/media/3j9GJRoshVyidxgu2I/giphy.gif",
+  "https://media.giphy.com/media/5Wkq1gv678KQDr6PUH/giphy.gif",
+  "https://media.giphy.com/media/k4drIzcE2mPWU/giphy.gif",
+  "https://media.giphy.com/media/Y5GVgQZCluUWQ/giphy.gif",
+  "https://media.giphy.com/media/xUOxf7BoJ9L9f5dR5K/giphy.gif",
+  "https://media.giphy.com/media/3o6Mb9CzbVBqLnNJhC/giphy.gif",
+  "https://media.giphy.com/media/UuHRWwcDLQxG4si32V/giphy.gif",
+  "https://media.giphy.com/media/Ap812nzbES2u4/giphy.gif",
+  "https://media.giphy.com/media/mXwxPJjb1SzlhwMHfd/giphy.gif",
+  "https://media.giphy.com/media/dmB5vD2t2gR8Y/giphy.gif",
+  "https://media.giphy.com/media/dmB5vD2t2gR8Y/giphy.gif",
+  "https://media.giphy.com/media/lD0OBtwl2Xxm0/giphy.gif",
+  "https://media.giphy.com/media/kgaeqKCz7WXjjTKJOn/giphy.gif",
+];
+
 exports.nextJoke = async function () {
   let uid = this.user.id;
   let K_UID_TOLD = K_JOKES_TOLD + uid;
@@ -230,6 +278,7 @@ exports.nextJoke = async function () {
       text: x.content,
       params: {
         quick_replies: JOKES_QUICK_REPLIES,
+        pre_imgs: [_.sample(joke_web_gifs)],
       },
     };
   }
@@ -272,6 +321,34 @@ exports.regenSecretNumber = async function (min, max) {
   return "";
 };
 
+const congrats_web_imgs = [
+  "https://user-images.githubusercontent.com/3538629/100497825-da2b6880-3198-11eb-88a3-202f25cf4232.png",
+];
+
+// Find more web gifs on https://giphy.com/
+const congrats_web_gifs = [
+  "https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif",
+  "https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif",
+  "https://media.giphy.com/media/UKWxGMEPjRwCA/giphy.gif",
+  "https://media.giphy.com/media/L3uegwiKeAY6GG1UmI/giphy.gif",
+  "https://media.giphy.com/media/l49JHz7kJvl6MCj3G/giphy.gif",
+  "https://media.giphy.com/media/4KxeicCUTvhrW/giphy.gif",
+  "https://media.giphy.com/media/HXF45CT8cvzZC/giphy.gif",
+  "https://media.giphy.com/media/3ohfFopqHDT7vcMM2A/giphy.gif",
+];
+
+const badluck_web_imgs = [
+  "https://user-images.githubusercontent.com/3538629/100497769-86208400-3198-11eb-8c31-d2a006416aee.png",
+];
+const badluck_web_gitfs = [
+  "https://media.giphy.com/media/A3t48v7vgzk1G/giphy.gif",
+  "https://media.giphy.com/media/UvwTujCTG9k52/giphy.gif",
+  "https://media.giphy.com/media/3ohjV5uukLAvnhS7vy/giphy.gif",
+  "https://media.giphy.com/media/xT0xezuSXb1PuIiWL6/giphy.gif",
+  "https://media.giphy.com/media/l0MYGhnGm3sTNreow/giphy.gif",
+  "https://media.giphy.com/media/d3JIxO0bLk27ZSus/giphy.gif",
+];
+
 exports.verifyInputAgainstSecret = async function (input) {
   let secret = await this.maestro.get(secretKey(this.user.id));
   let turn = await this.maestro.incrby(turnKey(this.user.id), 1);
@@ -298,29 +375,99 @@ exports.verifyInputAgainstSecret = async function (input) {
     if (inputNumber == secret) {
       // It took you 2 turns to guess my number, which was 10.
       dropSession(this.maestro, this.user.id);
-      return `{CLEAR} 太厉害了! 你在第 ${turn} 次猜中了, 这个数字是 ${secret}。`;
-    } else if (inputNumber > secret) {
-      if (turn == turnMax) {
-        dropSession(this.maestro, this.user.id);
-        return `{CLEAR} 抱歉，现在您在 5 次尝试后，没有猜中，这个数字是 ${secret}。 发送 "猜数字"，再玩一次。`;
-      }
-
-      return `您的数字${inputNumber}比谜底数字大，还有 ${
-        turnMax - turn
-      } 次机会。`;
-    } else {
-      if (turn == turnMax) {
-        dropSession(this.maestro, this.user.id);
-        return `{CLEAR} 抱歉，现在您在 5 次尝试后，没有猜中，这个数字是 ${secret}. 发送 "猜数字"，再玩一次。`;
-      }
-
-      return `您的数字${inputNumber}比谜底数字小，还有 ${
-        turnMax - turn
-      } 次机会。`;
+      return {
+        text: "{CLEAR} #generic#",
+        params: {
+          // 发送正文前，推送图片
+          pre_imgs: [_.sample(congrats_web_gifs)],
+          // 快捷回复
+          quick_replies: defaultQuickReplies,
+          // 正文
+          render: [
+            {
+              title: "恭喜🎉",
+              image_url: _.sample(congrats_web_imgs),
+              subtitle: `太厉害了! 你在第 ${turn} 次猜中了, 这个数字是 ${secret}。`,
+              buttons: [
+                {
+                  type: "postback",
+                  title: "再玩一次",
+                  payload: "__kickoff_guess_num",
+                },
+              ],
+            },
+          ],
+        },
+      };
+    } else if (inputNumber > secret && turn < turnMax) {
+      return {
+        text: `您的数字 ${inputNumber}比谜底数字大，还有${
+          turnMax - turn
+        }次机会。`,
+        params: {
+          quick_replies: defaultQuickReplies,
+        },
+      };
+    } else if (inputNumber < secret && turn < turnMax) {
+      return {
+        text: `您的数字${inputNumber}比谜底数字小， 还有 ${
+          turnMax - turn
+        } 次机会。`,
+        params: {
+          quick_replies: defaultQuickReplies,
+        },
+      };
+    } else if (turn >= turnMax) {
+      dropSession(this.maestro, this.user.id);
+      return {
+        text: "{CLEAR} #generic#",
+        params: {
+          // 发送正文前，推送图片
+          pre_imgs: [_.sample(badluck_web_gitfs)],
+          // 快捷回复
+          quick_replies: defaultQuickReplies,
+          render: [
+            {
+              title: "没猜到",
+              image_url: _.sample(badluck_web_imgs),
+              subtitle: `抱歉，现在您在 5 次尝试后，没有猜中，这个数字是 ${secret}。`,
+              buttons: [
+                {
+                  type: "postback",
+                  title: "重来一次",
+                  payload: "__kickoff_guess_num",
+                },
+              ],
+            },
+          ],
+        },
+      };
     }
   } catch (e) {
     debug("error", e);
-    return `这不是一个数字, 请给我发送阿拉伯数字，范围 ${rangeMin} 到 ${rangeMax}。`;
+    return {
+      text: `这不是一个数字, 请给我发送阿拉伯数字， 范围 ${rangeMin} 到 ${rangeMax}。`,
+      params: {
+        quick_replies: [
+          {
+            content_type: "text",
+            title: "25",
+            payload: "25",
+          },
+          {
+            content_type: "text",
+            title: "50",
+            payload: "50",
+          },
+          {
+            content_type: "text",
+            title: "75",
+            payload: "75",
+          },
+          ...defaultQuickReplies,
+        ],
+      },
+    };
   }
 
   return "";

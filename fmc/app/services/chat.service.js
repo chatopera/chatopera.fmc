@@ -176,6 +176,22 @@ logic.use(async function (ctx, next) {
 });
 
 /**
+ * 1) 是否发送正文前的图片, 定义在 ctx.response.params.pre_imgs 中
+ * 2) next()
+ */
+logic.use(async function (ctx, next) {
+  if (ctx.response?.params?.pre_imgs) {
+    if (_.isArray(ctx.response.params.pre_imgs)) {
+      for (let x of ctx.response.params.pre_imgs) {
+        await ctx.facebook.sendImageMessage(ctx.senderId, x);
+      }
+    }
+  }
+
+  await next();
+});
+
+/**
  * 1) 兜底回复时，检查 faq 数据作为建议回复
  * 2) 否：next()
  */

@@ -155,6 +155,31 @@ class FacebookService {
   }
 
   /**
+   * Sender Action: typing_on
+   * indicate bot is processing
+   * https://developers.facebook.com/docs/messenger-platform/send-messages/sender-actions
+   * @param {*} recipientId
+   */
+  async sendSenderTypingOn(recipientId) {
+    debug('sendSenderTypingOn (%s)', recipientId);
+    let body = await got
+      .post(FACEBOOK_MESSAGES_API, {
+        searchParams: {
+          access_token: this.access_token,
+        },
+        json: {
+          recipient: {
+            id: recipientId,
+          },
+          sender_action: 'typing_on',
+        },
+      })
+      .json();
+    debug('sendSenderTypingOn res %s', JSON.stringify(body, null, 2));
+    return body;
+  }
+
+  /**
    * Send a image via url
    * https://developers.facebook.com/docs/messenger-platform/send-messages#messaging_types
    * @param {*} recipientId

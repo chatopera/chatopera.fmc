@@ -9,8 +9,11 @@
 //
 //===============================================================================
 const debug = require('debug')('fmc:ctrl:chat');
+const config = require('../config/index');
 const chatServiceCreate = require('../services/chat.service').create;
+const facebookService = require('../services/facebook.service');
 const CONSTANTS = require('../miscs/constants');
+const { getAccountByPageId } = require('../miscs/utils');
 
 /**
  * 处理 FB Webhook 消息事件
@@ -25,6 +28,13 @@ async function handlePageEntry(entry) {
       let recipientId = messagingEvent.recipient.id;
 
       const chatService = await chatServiceCreate(recipientId, senderId);
+
+      // fast reply as typing action
+      const facebook = await facebookService.getInstance(
+        recipientId,
+        getAccountByPageId(config.accounts, recipientId)
+      );
+      await facebook.sendSenderTypingOn(senderId);
 
       let action = dispatch(messagingEvent);
 
