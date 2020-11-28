@@ -30,15 +30,22 @@ Just click _Send Message_ to bring up the chatbox.
 
 ## Prerequisites
 
+### Setup
+
 - [Facebook Account](https://developers.facebook.com/docs/messenger-platform/getting-started/sample-apps/original-coast-clothing)
   - Facebook Page
   - Facebook Developer Account
   - Facebook App:
 - Facebook Page
+- Docker & Docker Compose
 - Chatopera Account
+
+## Development
+
+All requirements in [Setup](#Setup), with additionals:
+
 - Node.js 10+
 - Text Editor or IDE for JavaScript
-- Docker & Docker Compose
 
 ## Provision your bot service with Facebook Messenger and Chatopera FMC
 
@@ -83,13 +90,21 @@ cd chatopera.fmc
 cp sample.env .env
 ```
 
+### Run FMC
+
+```
+cd chatopera.fmc
+docker-compose up -d
+docker-compose logs -f
+```
+
 ### start ngrok
 
 ```
 ngrok http 8555
 ```
 
-![]()
+![](./extras/images/4.png)
 
 ## Contrib
 
