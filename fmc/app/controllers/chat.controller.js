@@ -93,7 +93,6 @@ async function handlePageEntry(entry) {
  * @param {*} event
  */
 function resolveTextInMessagingEvent(event) {
-  let final = null;
   let msg = event.message?.text;
   let quick_reply = event.message?.quick_reply?.payload;
   let postback = event.postback?.payload;
