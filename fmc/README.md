@@ -1,17 +1,14 @@
-## 安装依赖
+# FMC
 
-```
-admin/install.sh
-```
+Learn more in [Engineering](../extras/engineering.md).
 
-## 格式化代码
+## LICENSE
 
-```
-admin/format.sh
-```
+Copyright (2018-2020) <a href="https://www.chatopera.com/" target="_blank">北京华夏春松科技有限公司</a>
 
-## Build Docker Image
+[Apache License Version 2.0](../LICENSE)
 
-```
-admin/build.sh
-```
+[![chatoper banner][co-banner-image]][co-url]
+
+[co-banner-image]: https://static-public.chatopera.com/assets/images/42383104-da925942-8168-11e8-8195-868d5fcec170.png
+[co-url]: https://www.chatopera.com

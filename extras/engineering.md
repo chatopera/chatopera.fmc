@@ -2,9 +2,48 @@
 
 Enable more features with coding for [Chatopera FMC](https://github.com/chatopera/chatopera.fmc).
 
-_TBD, still writing in progress._
+## Deps
 
-[Go back](https://github.com/chatopera/chatopera.fmc).
+- Nodejs 10+
+
+## Install
+
+```
+cd fmc
+./admin/install.sh
+```
+
+## Config
+
+```
+cd fmc
+cp admin/sample.localrc admin/localrc
+# edit admin/localrc
+cp app/config/accounts.json app/config/accounts-dev.json
+# edit app/config/accounts-dev.json
+```
+
+## Dev
+
+```
+cd fmc
+./admin/dev.sh
+```
+
+The core source codes are `fmc/app/controllers/chat.controller.js` and `fmc/app/services/chat.service.js`.
+
+## Build docker images
+
+```
+cd fmc
+./admin/build.sh
+```
+
+## More docs
+
+- [Facebook Messenger Platform Features](https://developers.facebook.com/docs/messenger-platform)
+
+- [Chatopera SDKs and APIs](https://docs.chatopera.com/products/chatbot-platform/integration/index.html)
 
 ## LICENSE
 

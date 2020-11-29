@@ -56,7 +56,7 @@ These two resources are provisioned by [FMC Readme](https://github.com/chatopera
 
 ### Import FAQs
 
-Download [Quick Start FAQs's json file](./bot/faq.json), navigate to Bot's FAQs page on [Chatopera Cloud Service](https://bot.chatopera.com), click `批量导入`, select `faq.json` and click `上传`.
+Download [Quick Start FAQs's json file](https://github.com/chatopera/chatopera.fmc/raw/master/extras/bot/faq.json), navigate to Bot's [FAQs](https://docs.chatopera.com/products/chatbot-platform/faq/index.html) page on [Chatopera Cloud Service](https://bot.chatopera.com), click `批量导入`, select `faq.json` and click `上传`.
 
 <img src="./images/13.png" width="600"/>
 
@@ -64,9 +64,9 @@ After importing, you can find data in Bot's FAQs list.
 
 ### Import Conversations
 
-Conversations are chats in multi rounds, `Tell a Joke` and `Guess the Number` are implemented with Conversations.
+[Conversations](https://docs.chatopera.com/products/chatbot-platform/conversation/index.html) are chats in multi rounds, `Tell a Joke` and `Guess the Number` are implemented with Conversations.
 
-Chatopera make it a standard to develop conversations, multi conversations are packaged into a file with a suffix `.c66`. The Quick Start's conversations file can be downloaded as [MeFrontdeskBot.zh_CN.1.0.0.c66](./bot/releases/MeFrontdeskBot.zh_CN.1.0.0.c66).
+Chatopera make it a standard to develop conversations, multi conversations are packaged into a file with a suffix `.c66`. The Quick Start's conversations file can be downloaded as [MeFrontdeskBot.zh_CN.1.0.0.c66](https://github.com/chatopera/chatopera.fmc/raw/master/extras/bot/releases/MeFrontdeskBot.zh_CN.1.0.0.c66).
 
 After downloaded, navigate to Bot's Conversation page and click `导入`, select `MeFrontdeskBot.zh_CN.1.0.0.c66`, click `保存`. You can find there are four conversations in Conversation list now.
 
@@ -74,7 +74,7 @@ After downloaded, navigate to Bot's Conversation page and click `导入`, select
 
 ### Verify Chats
 
-We are almost there, go to Bot's Test page and send `产品介绍`, make sure you get response alike.
+We are almost there, go to Bot's [Test](https://docs.chatopera.com/products/chatbot-platform/debug.html) page and send `产品介绍`, make sure you get response alike.
 
 <img src="./images/15.png" width="600"/>
 
@@ -82,9 +82,9 @@ We are almost there, go to Bot's Test page and send `产品介绍`, make sure yo
 
 Once the FAQs or Conversations is imported, they take effects, your audiences can use these services immediately.
 
-So, for testing purpose, you can create another bot for develop bot and export FAQs and Conversations files, and then import them to your bot in production.
+So, for testing purpose, you can create another bot for developing bot and export FAQs and Conversations files, and then import them to your bot in production.
 
-Congratulations! The Quick Start is done.
+Congratulations👏! The Quick Start is done!
 
 ## Become a expert to build Chatbot
 
