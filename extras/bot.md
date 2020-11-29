@@ -1,3 +1,9 @@
+<div align=right>
+
+[Main](https://github.com/chatopera/chatopera.fmc)　|　[Bot Customization Guide](https://github.com/chatopera/chatopera.fmc/blob/master/extras/bot.md)　|　[Engineering](https://github.com/chatopera/chatopera.fmc/blob/master/extras/engineering.md)　|　[Get Help](https://docs.chatopera.com/products/chatbot-platform/support.html)
+
+</div>
+
 # Bot Customization Guide
 
 Customize your bot with [Chatopera Cloud Service](https://bot.chatopera.com) to enable more chat abilities. Let's learn about Quick Start at first.
@@ -88,7 +94,29 @@ Congratulations👏! The Quick Start is done!
 
 ## Become a expert to build Chatbot
 
-So, just a few clicks couldn't make you an expert. You can check out Quick Start's [Conversations Scripts](./bot/botarchive) to learn more. But to become expert or master, please take time to learn our online documentations.
+So, just a few clicks couldn't make you an expert. Let's us move one step forward.
+
+### Add more FAQs
+
+Adding more FAQs would help bot answering 80% questions, the chats history and lattice page would help you figure out what are the Frequent Asked Questions by your visitors.
+
+<img src="./images/16.png" width="600"/>
+
+### Add topics in Conversation
+
+Assume you have done all the works in Quick Start, let us modify the conversations in Conversation Designer for your bot.
+
+First, download [CDE, aka Chatopera Conversation Designer](https://docs.chatopera.com/products/chatbot-platform/conversation/cde.html), after installation, open CDE, you would get a Screen as below.
+
+<img src="./images/17.png" width="600"/>
+
+Click `添加` and fill in your bot's ClientID and Secret which copied from [Chatopera Cloud Service](https://bot.chatopera.com). Click `确认`, the bot would be added into bot list. Click `打开`, now you will see the topics. Ok, pretty easy, now you can edit the topics or create new topics. Use `Save`, `Upload` and `Auto Upload` during your writing scripts, the bot would be changed on the fly.
+
+<img src="./images/18.png" width="600"/>
+
+## Become a master
+
+To become a master, please take time to learn our online documentations.
 
 - [Chatopera 机器人平台使用指南](https://ke.qq.com/course/2994143?quicklink=1)
 - [Chatopera 云服务文档中心](https://docs.chatopera.com/products/chatbot-platform/index.html)
