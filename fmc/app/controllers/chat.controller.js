@@ -28,15 +28,16 @@ async function handlePageEntry(entry) {
       let recipientId = messagingEvent.recipient.id;
 
       const chatService = await chatServiceCreate(recipientId, senderId);
+      let action = dispatch(messagingEvent);
 
       // fast reply as typing action
-      const facebook = await facebookService.getInstance(
-        recipientId,
-        getAccountByPageId(config.accounts, recipientId)
-      );
-      await facebook.sendSenderTypingOn(senderId);
-
-      let action = dispatch(messagingEvent);
+      if (action && action !== 'EMPTY') {
+        const facebook = await facebookService.getInstance(
+          recipientId,
+          getAccountByPageId(config.accounts, recipientId)
+        );
+        await facebook.sendSenderTypingOn(senderId);
+      }
 
       switch (action) {
         case 'OPEN_THREAD_QUERY':
@@ -70,15 +71,13 @@ async function handlePageEntry(entry) {
           }
           break;
         case 'DEFAULT':
-          let msg = messagingEvent.message?.text;
-          let quick_reply = messagingEvent.message?.quick_reply?.payload;
-          let postback = messagingEvent.postback?.payload;
-          // 优先级: quick_reply > postback > message.text
-          let final = quick_reply ?? postback ?? msg;
-
           // skip empty or undefined messages
           // https://github.com/chatopera/chatopera.fmc/issues/1
-          if (final) await chatService.chat(senderId, final);
+          let final = resolveTextInMessagingEvent(messagingEvent);
+          await chatService.chat(senderId, final);
+          break;
+        case 'EMPTY':
+          // keep silent
           break;
         default:
           console.log('WARN: [chat] unknown event action', messagingEvent);
@@ -86,6 +85,24 @@ async function handlePageEntry(entry) {
       }
     }
   }
+}
+
+/**
+ * 获得 文本消息的文本
+ * 优先级: quick_reply > postback > message.text
+ * @param {*} event
+ */
+function resolveTextInMessagingEvent(event) {
+  let final = null;
+  let msg = event.message?.text;
+  let quick_reply = event.message?.quick_reply?.payload;
+  let postback = event.postback?.payload;
+  let final = quick_reply ?? postback ?? msg;
+  if (typeof final === 'string') {
+    final = final.trim();
+  }
+
+  return final;
 }
 
 /**
@@ -105,6 +122,8 @@ function dispatch(event) {
     action = 'GET_START';
   } else if (/^faq-(.+)/.test(event.postback?.payload)) {
     action = 'POSTBACK_PAYLOAD_FAQ';
+  } else if (!resolveTextInMessagingEvent(event)) {
+    action = 'EMPTY';
   } else {
     action = 'DEFAULT';
   }

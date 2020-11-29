@@ -1,10 +1,25 @@
 # Bot Customization Guide
 
-Customize your bot with chat abilities.
+Customize your bot with [Chatopera Cloud Service](https://bot.chatopera.com) to enable more chat abilities.
 
-## Quick start
+## Quick Start
 
-## Learn more about Chatopera
+With Quick Start, you can get a bot with following abilities:
+
+### A Welcome Message
+
+A Welcome Message would catch people most attentions, so it is the best opporunity to tell visitor what is bot's offerings.
+
+### A Help Message for navigation
+
+Whenever visitor inputs `帮助`, `h`, or `/`, a Help Message is sent to visitor.
+This shortcut is very important, as visitor may lost in chats, or need hits to get your services.
+
+### Answer Questions
+
+## Become a expert to build Chatbot
+
+## Deep Dive
 
 [Go back](https://github.com/chatopera/chatopera.fmc).
 
