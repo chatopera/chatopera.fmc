@@ -8,17 +8,76 @@ Boot your bots in Facebook Messenger with [Chatopera](https://bot.chatopera.com/
 
 If you decide to launch a Messenger Bot on [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform) so that all your customers or target audiences can connect you via Facebook, you can run a software with source codes. There are many reasons to run a bot in such way, especially when you have technical skills, you want to leverage the most powerfull features in [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform).
 
-As [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform) is changing and reshaping quickly, to use the latest APIs, you have to hands on and do some coding stuffs. Sometimes you want to intergates Facebook Messenger bot and other IT Systems like CRM, OA and 3rd party service together, the best way is starting your work with a project skeleton, this project skeleton has done some general functions. Or what you need to do is just making configurations and running it, later your business requirements changes or you want to make some modifications, you would like to touch the source codes and rebuild the software. [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) fits into such purpose.
+As [Facebook Messenger Platform](https://developers.facebook.com/docs/messenger-platform) is changing and reshaping quickly, to use the latest APIs, you have to hands on and do some coding stuffs. Sometimes you want to intergates Facebook Messenger bot and other IT Systems like CRM, OA and 3rd party service together, the best way is starting your work with a project skeleton, this project skeleton has done some general features. Or what you need to do is just making configurations and running it, later your business requirements changes, you want to make some modifications, you would like to touch the source codes and rebuild the software. [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) fits into such needs.
 
 ## Featured
 
-- Services are running with docker containers
-- Manage app status with [docker-compose](https://docs.docker.com/compose/install/)
-- Integrated with [Chatopera Cloud Service](https://bot.chatopera.com) to customization your bot
-  - Support image, button, generic templates
+- Services are running with docker containers, cross platform and OS
+- Manage app status with [docker-compose](https://docs.docker.com/compose/install/), easy to run, backup, upgrade or restore
+- Collect visitors' feedbacks during chats to improve bot further
+- Support Multi Apps and Multi Pages in a single app with a configuration file
+- Support Multi Locales and define a fallback locale as well
+- Integrated with [Chatopera Cloud Service](https://bot.chatopera.com) for bot customization
+  - Support image, button, generic templates, quick replies, typing status, etc. Learn more about [Messages in Facebook Messenger](https://developers.facebook.com/docs/messenger-platform/send-messages)
   - Build chat flows with Conversation Designer
   - Add FAQs in Web Portal
-- Develop with Node.js, JavaScript
+  - Bot Analisys and Lattice for tuning bots with chat histories
+
+<details>
+<summary>Collapse to get more about Chatopera Cloud Service</summary>
+<p>
+
+<p align="center">
+  <b>Dicts</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530072-da92d600-d33e-11e9-8656-01c26caff4f9.png" width="800">
+</p>
+
+<p align="center">
+  <b>Entities</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530091-e41c3e00-d33e-11e9-9704-c07a2a02b84e.png" width="800">
+</p>
+
+<p align="center">
+  <b>Intents</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530169-12018280-d33f-11e9-93b4-9db881cf4dd5.png" width="800">
+</p>
+
+<p align="center">
+  <b>Slots</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530187-20e83500-d33f-11e9-87ec-a0241e3dac4d.png" width="800">
+</p>
+
+<p align="center">
+  <b>Train Machine Learning model</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530235-33626e80-d33f-11e9-8d07-fa3ae417fd5d.png" width="800">
+</p>
+
+<p align="center">
+  <b>Write Chat Scripts with Conversation Designer</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/cde-Ul2SnIfYAD.png" width="800">
+</p>
+
+<p align="center">
+  <b>Test chats</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530253-3d846d00-d33f-11e9-81ea-86e6d47020d8.png" width="800">
+</p>
+
+<p align="center">
+  <b>Bot profile</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530312-6442a380-d33f-11e9-869c-85fb6a835a97.png" width="800">
+</p>
+
+<p align="center">
+  <b>Integrations</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/integration-mXw5LQX4DD.png" width="800">
+</p>
+
+<p align="center">
+  <b>Chats History</b><br>
+  <img src="https://static-public.chatopera.com/assets/images/64530295-5856e180-d33f-11e9-94d4-db50481b2d8e.png" width="800">
+</p>
+</p>
+</details>
 
 ## Give me a demo
 
@@ -35,33 +94,37 @@ Just click _Send Message_ to bring up the chatbox.
 - [Facebook Account](https://developers.facebook.com/docs/messenger-platform/getting-started/sample-apps/original-coast-clothing)
   - Facebook Page
   - Facebook Developer Account
-  - Facebook App:
-- Facebook Page
-- Docker & Docker Compose
-- Chatopera Account
+- [Docker](https://docs.docker.com/) & [Docker Compose](https://docs.docker.com/compose/install/)
+- [Chatopera Cloud Service](https://bot.chatopera.com) Account
 
 ## Development
 
 All requirements in [Setup](#Setup), with additionals:
 
-- Node.js 10+
-- Text Editor or IDE for JavaScript
+- Node.js 10+, [FMC](https://github.com/chatopera/chatopera.fmc) is developed with JavaScript.
+- Text Editor for JavaScript, e.g. [VS Code](https://code.visualstudio.com/).
+
+Find more development knowledges in [Engineering Section](./extras/engineering.md).
+
+**Mostly, you would work on `Setup` and [add bot chats abilities](./extras/bot.md). It is rare that you need to do FMC development stuffs, if you want some enhancements or provide feedbacks for FMC, please create an Issue first at [Issues](https://github.com/chatopera/chatopera.fmc/issues).**
+
+In below documentation, I would talk about how to do `Setup` and [add bot chats abilities](./extras/bot.md).
 
 ## Provision your bot service with Facebook Messenger and Chatopera FMC
 
-### Create a Facebook Page
+### Step 1. Create a Facebook Page
 
 Just login facebook and then click [create](https://www.facebook.com/pages/creation/?ref_type=comet_home), you can design your page from here with a Designer Portal, very straight forward.
 
-### Join Facebook Developers Program
+### Step 2. Join Facebook Developers Program
 
 Open [https://developers.facebook.com/apps](https://developers.facebook.com/apps) and register account.
 
-### Create App in Facebook Developer Portal
+### Step 3. Create App in Facebook Developer Portal
 
 ![](./extras/images/2.png)
 
-### Add Messenger from Products list
+### Step 4. Add Messenger from Products list
 
 After your app is created, go to application detail page, from the left sidebar, find section of 'PRODUCTS'. Click '+' and filter 'Messenger', select it.
 
@@ -75,9 +138,9 @@ Now, let's setup your [Chatopera FMC Instance](https://github.com/chatopera/chat
 
 - Docker && Docker Compose, versions released after 2017.
 - Access to Internet.
-- HTTPS, [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) would be requested by Facebook to receive messaging events. Many ways to accomplish it, I would suggest using [ngrok](https://dashboard.ngrok.com/get-started/setup) for beginners. I would demostrate how to use ngrok to setup HTTPS for [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) later.
+- HTTPS, [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) would be requested by Facebook to handle messaging events. There are many ways to accomplish it, I would suggest using [ngrok](https://dashboard.ngrok.com/get-started/setup) for beginners, also demostrate how to use ngrok to setup HTTPS for [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) later.
 
-### Download FMC
+### Step 5. Download FMC
 
 Open a terminal to run shell commands, for Windows users, please install [Git Bash](https://git-scm.com/download/win).
 
@@ -89,11 +152,11 @@ cd chatpera.fmc # This folder is referenced as $FMC_HOME in follow-up.
 
 `SOME_WHERE_AS_ROOT` is location you want to persist FMC source codes and data, e.g. `~`.
 
-### Configuration
+### Step 6. Configuration
 
 Basically, we need to configure two files: `.env` and `accounts.json`.
 
-#### .env
+#### 6.1 .env
 
 `.env` is used for customize Application level properties.
 
@@ -107,9 +170,9 @@ Open `.env` with a text editor, there are some variables and their default value
 
 Other variables in `.env` are involved with more technology knowledges, please find more information in [Engineering Section](./extras/engineering.md).
 
-## accounts.json
+#### 6.2 accounts.json
 
-`accounts.json` stores credentails for authentication and authorization between your FMC instance, Facebook Messenger Platform and Chatopera Cloud Service, other settings in `accounts.json` are for customizing bot message or behaviors.
+`accounts.json` stores credentails for authentication and authorization among your FMC instance, Facebook Messenger Platform and Chatopera Cloud Service, other settings in `accounts.json` are for customizing messages or behaviors of bot.
 
 ```
 cd $FMC_HOME
@@ -260,7 +323,7 @@ cp fmc/app/config/accounts.json fmc/data/accounts.json
 </p>
 </details>
 
-### Run FMC
+### Step 7. Run FMC
 
 After you create the `.env` and `accounts.json` and docker & docker-compose are installed, let's start FMC with following commands.
 
@@ -302,7 +365,7 @@ Powered by https://github.com/chatopera/chatopera.fmc
 server listening on port 8555
 ```
 
-### Host with HTTPS
+### Step 8. Host with HTTPS
 
 You can choose many solutions to run FMC with HTTPS, I would suggest [ngrok](https://dashboard.ngrok.com/) for demo purpose, it is easy to use, assume FMC is running on 8555 port, run `ngrok` command in a terminal as below.
 
@@ -314,21 +377,21 @@ Now, you would give a screen like this
 
 ![](./extras/images/4.png)
 
-So, HTTPS is hooked with your FMC instance, in our situation, `http://localhost:8555` is proxied as `https://50079b4f95cc.ngrok.io` via `ngrok`. From Facebook Messenger Platform, it can access your FMC instance with `https://50079b4f95cc.ngrok.io`.
+So, HTTPS is hooked with your FMC instance, in our situation, `http://localhost:8555` is proxied as `https://50079b4f95cc.ngrok.io` via `ngrok`. Now, Facebook Messenger Platform can access your FMC instance with `https://50079b4f95cc.ngrok.io`.
 
 Keep the `ngrok http 8555` command running, if it goes down, the requests would not be received by your FMC instance.
 
-### Update Callback Url for webhook
+### Step 9. Update Callback URL for webhook
 
-In `Messenger Settings Page`, scroll down to webhooks, click `Edit Callback URL`. Fill in your HTTPS URl with path and "works" as _Verify Token_, click `Verify and Save`.
+In `Messenger Settings Page`, scroll down to webhooks, click `Edit Callback URL`. Fill in your HTTPS URL with path and "works" as _Verify Token_, click `Verify and Save`.
 
 ```
-https://YOUR_HTTPS_URL/webhook
+https://YOUR_HTTPS_DOMAIN/webhook
 ```
 
 As previous work with `ngrok`, the Callback URL is `https://50079b4f95cc.ngrok.io/webhook`.
 
-### Verify chatbox
+### Step 10. Verify chatbox
 
 Now, go to your Facebook Page, and view as `Visitor`. As you are admin of this Facebook page, URL of its Visitor view is something like.
 
@@ -344,15 +407,15 @@ Not get the `Send Message` Button? Maybe you should turn on `Messages` option in
 
 ![](./extras/images/7.png)
 
-### Customize your bot
+### Step 11. Customize your bot
 
-Now, your FMC instance and Facebook Page is connected, so, let's add chat abilities with [Chatopera Cloud Service](https://bot.chatopera.com).
+Now, your FMC instance, Chatopera Cloud Service and Facebook Page are connected, so, let's add chat abilities with [Chatopera Cloud Service](https://bot.chatopera.com).
 
-Find quick start and other knowledges with [bot guide](./extras/bot.md). In the quick start, you would get a powerful chatbot with several clicks.
+Find quick start and other knowledges with [Bot Customization Guide](./extras/bot.md). In the quick start, you would get a powerful chatbot with several clicks.
 
-With [Chatopera Cloud Service](https://bot.chatopera.com), you get a powerful toolkit to build bots, but get a deep design or development skills are key to provide great bot services, there are a lot books to help you for bot UX, e.g. [`Designing Bots: Creating Conversational Experiences`](https://www.oreilly.com/library/view/designing-bots/9781491974810/).
+With [Chatopera Cloud Service](https://bot.chatopera.com), you get a powerful toolkit to build bots, but getting a deep design or development skills is key to make great bot services, there are a lot books to help you for bot UX, e.g. [`Designing Bots: Creating Conversational Experiences`](https://www.oreilly.com/library/view/designing-bots/9781491974810/), [`Hooked: How to Build Habit-Forming Products`](https://www.amazon.com/Hooked-How-Build-Habit-Forming-Products/dp/1591847788).
 
-### Submission & Review Process
+### Step 12. Submission & Review Process
 
 With all these works, you have a great bot that can deliver foods, book cab or tell jokes, how to publish it to public in Facebook?
 
@@ -362,11 +425,11 @@ I won't go to details, the Facebook guide tells very clearly. Currently, the onl
 
 ![](./extras/images/8.png)
 
-`pages_user_locale` is not required, so I would suggest not add it into your submission for this time, later, you may support many locales in your bot, then make another reviews.
+`pages_user_locale` is not required, so I would suggest not add it into your submission for this time, later, you may support many locales in your bot, then submit another review.
 
-## Go alive
+## Congratulations
 
-Your bot is alive, so, you want to share it to your audiences. Read more about me link, chat plugin and other things in [Discovery & Reengagement](https://developers.facebook.com/docs/messenger-platform/discovery).
+Your bot is alive, next you want to share it to your audiences. Read more about me link, chat plugin and other things in [Discovery & Re-engagement](https://developers.facebook.com/docs/messenger-platform/discovery).
 
 You would still need to refine, enhance your bot's chats in days to come, but by the end of the day, you are going to touch millions people's life with your bot, cheers🍻!
 
@@ -374,7 +437,7 @@ You would still need to refine, enhance your bot's chats in days to come, but by
 
 ## Contrib
 
-Start to develop fmc project with [GUIDE](./fmc).
+Start to develop [FMC](https://github.com/chatopera/chatopera.fmc) project with [GUIDE](./fmc), PRs are all welcome!
 
 ## References
 
