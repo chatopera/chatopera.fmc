@@ -122,19 +122,19 @@ If you come to any troubles, find us to get help with [Contact Us Link](https://
 
 ## Provision your bot service with Facebook Messenger and Chatopera FMC
 
-### Step 1. Create a Facebook Page
+### Step 1/12 Create a Facebook Page
 
 Just login facebook and then click [create](https://www.facebook.com/pages/creation/?ref_type=comet_home), you can design your page from here with a Designer Portal, very straight forward.
 
-### Step 2. Join Facebook Developers Program
+### Step 2/12 Join Facebook Developers Program
 
 Open [https://developers.facebook.com/apps](https://developers.facebook.com/apps) and register account.
 
-### Step 3. Create App in Facebook Developer Portal
+### Step 3/12 Create App in Facebook Developer Portal
 
 ![](./extras/images/2.png)
 
-### Step 4. Add Messenger from Products list
+### Step 4/12 Add Messenger from Products list
 
 After your app is created, go to application detail page, from the left sidebar, find section of 'PRODUCTS'. Click '+' and filter 'Messenger', select it.
 
@@ -150,7 +150,7 @@ Now, let's setup your [Chatopera FMC Instance](https://github.com/chatopera/chat
 - Access to Internet.
 - HTTPS, [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) would be requested by Facebook to handle messaging events. There are many ways to accomplish it, I would suggest using [ngrok](https://dashboard.ngrok.com/get-started/setup) for beginners, also demostrate how to use ngrok to setup HTTPS for [Chatopera FMC](https://github.com/chatopera/chatopera.fmc) later.
 
-### Step 5. Download FMC
+### Step 5/12 Download FMC
 
 Open a terminal to run shell commands, for Windows users, please install [Git Bash](https://git-scm.com/download/win).
 
@@ -162,7 +162,7 @@ cd chatpera.fmc # This folder is referenced as $FMC_HOME in follow-up.
 
 `SOME_WHERE_AS_ROOT` is location you want to persist FMC source codes and data, e.g. `~`.
 
-### Step 6. Configuration
+### Step 6/12 Configuration
 
 Basically, we need to configure two files: `.env` and `accounts.json`.
 
@@ -333,7 +333,7 @@ cp fmc/app/config/accounts.json fmc/data/accounts.json
 </p>
 </details>
 
-### Step 7. Run FMC
+### Step 7/12 Run FMC
 
 After you create the `.env` and `accounts.json` and docker & docker-compose are installed, let's start FMC with following commands.
 
@@ -375,7 +375,7 @@ Powered by https://github.com/chatopera/chatopera.fmc
 server listening on port 8555
 ```
 
-### Step 8. Host with HTTPS
+### Step 8/12 Host with HTTPS
 
 You can choose many solutions to run FMC with HTTPS, I would suggest [ngrok](https://dashboard.ngrok.com/) for demo purpose, it is easy to use, assume FMC is running on 8555 port, run `ngrok` command in a terminal as below.
 
@@ -391,7 +391,7 @@ So, HTTPS is hooked with your FMC instance, in our situation, `http://localhost:
 
 Keep the `ngrok http 8555` command running, if it goes down, the requests would not be received by your FMC instance.
 
-### Step 9. Update Callback URL for webhook
+### Step 9/12 Update Callback URL for webhook
 
 In `Messenger Settings Page`, scroll down to webhooks, click `Edit Callback URL`. Fill in your HTTPS URL with path and "works" as _Verify Token_, click `Verify and Save`.
 
@@ -401,7 +401,7 @@ https://YOUR_HTTPS_DOMAIN/webhook
 
 As previous work with `ngrok`, the Callback URL is `https://50079b4f95cc.ngrok.io/webhook`.
 
-### Step 10. Verify chatbox
+### Step 10/12 Verify chatbox
 
 Now, go to your Facebook Page, and view as `Visitor`. As you are admin of this Facebook page, URL of its Visitor view is something like.
 
@@ -417,7 +417,7 @@ Not get the `Send Message` Button? Maybe you should turn on `Messages` option in
 
 ![](./extras/images/7.png)
 
-### Step 11. Customize your bot
+### Step 11/12 Customize your bot
 
 Now, your FMC instance, Chatopera Cloud Service and Facebook Page are connected, so, let's add chat abilities with [Chatopera Cloud Service](https://bot.chatopera.com).
 
@@ -425,7 +425,7 @@ Find quick start and other knowledges with [Bot Customization Guide](./extras/bo
 
 With [Chatopera Cloud Service](https://bot.chatopera.com), you get a powerful toolkit to build bots, but getting a deep design or development skills is key to make great bot services, there are a lot books to help you for bot UX, e.g. [_Designing Bots: Creating Conversational Experiences_](https://www.oreilly.com/library/view/designing-bots/9781491974810/), [_Hooked: How to Build Habit-Forming Products_](https://www.amazon.com/Hooked-How-Build-Habit-Forming-Products/dp/1591847788).
 
-### Step 12. Submission & Review Process
+### Step 12/12 Submission & Review Process
 
 With all these works, you have a great bot that can deliver foods, book cab or tell jokes, how to publish it to public in Facebook?
 
